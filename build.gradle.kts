@@ -32,15 +32,25 @@ kotlin {
     mingwX64("windowsX64")
 
     sourceSets {
-        getByName("commonMain") {
+        val commonMain = getByName("commonMain") {
             dependencies {
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
                 implementation("io.ktor:ktor-client-core:2.3.0")
+                implementation("io.ktor:ktor-client-content-negotiation:2.3.0")
+                implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.0")
             }
         }
 
-        val nativeMain = create("nativeMain")
+        getByName("jvmMain") {
+            dependencies {
+                implementation("io.ktor:ktor-client-java:2.3.0")
+            }
+        }
+
+        val nativeMain = create("nativeMain") { dependsOn(commonMain) }
         val cioBasedMain = create("cioBasedMain") {
+            dependsOn(nativeMain)
+
             dependencies {
                 implementation("io.ktor:ktor-client-cio:2.3.0")
             }
@@ -48,9 +58,15 @@ kotlin {
         getByName("linuxX64Main") { dependsOn(cioBasedMain) }
         getByName("macosX64Main") { dependsOn(cioBasedMain) }
         getByName("macosArm64Main") { dependsOn(cioBasedMain) }
-        getByName("windowsX64Main") { dependsOn(nativeMain) }
+        getByName("windowsX64Main") {
+            dependsOn(nativeMain)
 
-        getByName("commonTest") {
+            dependencies {
+                implementation("io.ktor:ktor-client-winhttp:2.3.0")
+            }
+        }
+
+        val commonTest = getByName("commonTest") {
             dependencies {
                 implementation("io.kotest:kotest-framework-engine:5.6.1")
                 implementation("io.kotest:kotest-assertions-core:5.6.1")
@@ -65,8 +81,8 @@ kotlin {
             }
         }
 
-        val nativeTest = create("nativeTest")
-        val cioBasedTest = create("cioBasedTest")
+        val nativeTest = create("nativeTest") { dependsOn(commonTest) }
+        val cioBasedTest = create("cioBasedTest") { dependsOn(nativeTest) }
         getByName("linuxX64Test") { dependsOn(cioBasedTest) }
         getByName("macosX64Test") { dependsOn(cioBasedTest) }
         getByName("macosArm64Test") { dependsOn(cioBasedTest) }
