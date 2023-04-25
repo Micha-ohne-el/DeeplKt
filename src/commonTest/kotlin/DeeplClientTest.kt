@@ -5,39 +5,63 @@ import io.kotest.inspectors.forAll
 import io.kotest.matchers.shouldBe
 import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.engine.mock.respondOk
+import io.ktor.http.HttpMethod
+import io.ktor.http.URLProtocol
 
 class DeeplClientTest : DescribeSpec() {
     init {
-        val paidAuthKey = "01234567-89AB-CDEF-0123-456789ABCDEF"
-        val freeAuthKey = "$paidAuthKey:fx"
+        val authKey = "01234567-89AB-CDEF-0123-456789ABCDEF"
+        val freeAuthKey = "$authKey:fx"
 
         lateinit var engineSpy: MockEngine
 
         beforeEach {
-            engineSpy = MockEngine { request ->
+            engineSpy = MockEngine {
                 respondOk()
             }
         }
 
         describe("translate") {
-            it("requires only text and targetLang arguments") {
-                DeeplClient(paidAuthKey, engineSpy).translate(text = "text", targetLang = "targetLang")
-            }
-
             context("request") {
-                it("calls api.deepl.com") {
-                    DeeplClient(paidAuthKey, engineSpy).translate("text", "targetLang")
+                suspend fun send(key: String = authKey): MockEngine {
+                    DeeplClient(key, engineSpy).translate(text = "text", targetLang = "targetLang")
 
-                    engineSpy.requestHistory.forAll {
+                    return engineSpy
+                }
+
+                it("uses HTTPS") {
+                    send().requestHistory.forAll {
+                        it.url.protocol shouldBe URLProtocol.HTTPS
+                    }
+                }
+
+                it("issues a POST request") {
+                    send().requestHistory.forAll {
+                        it.method shouldBe HttpMethod.Post
+                    }
+                }
+
+                it("calls v2 endpoint") {
+                    send().requestHistory.forAll {
+                        it.url.encodedPath shouldBe "/v2/translate"
+                    }
+                }
+
+                it("calls paid API for paid account") {
+                    send().requestHistory.forAll {
                         it.url.host shouldBe "api.deepl.com"
                     }
                 }
 
-                it("calls api-free.deepl.com for a free account") {
-                    DeeplClient(freeAuthKey, engineSpy).translate("text", "targetLang")
-
-                    engineSpy.requestHistory.forAll {
+                it("calls free API for free account") {
+                    send(freeAuthKey).requestHistory.forAll {
                         it.url.host shouldBe "api-free.deepl.com"
+                    }
+                }
+
+                it("includes text to be translated") {
+                    send().requestHistory.forAll {
+                        it.url.parameters["text"] shouldBe "text"
                     }
                 }
             }
