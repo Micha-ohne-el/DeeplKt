@@ -1,16 +1,14 @@
 package moe.micha.deeplkt
 
-import io.kotest.assertions.any
-import io.kotest.common.ExperimentalKotest
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.inspectors.forAll
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldMatch
 import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.engine.mock.respondOk
 import io.ktor.http.HttpMethod
 import io.ktor.http.URLProtocol
 
-@OptIn(ExperimentalKotest::class)
 class DeeplClientTest : DescribeSpec() {
     init {
         val authKey = "01234567-89AB-CDEF-0123-456789ABCDEF"
@@ -123,10 +121,7 @@ class DeeplClientTest : DescribeSpec() {
                     client.translate("", TargetLang.Dutch, nonSplittingTags = listOf("one", "two"))
 
                     engineSpy.requestHistory.forAll {
-                        any {
-                            it.url.parameters["non_splitting_tags"] shouldBe "two,one"
-                            it.url.parameters["non_splitting_tags"] shouldBe "one,two"
-                        }
+                        it.url.parameters["non_splitting_tags"] shouldMatch """one,two|two,one"""
                     }
                 }
 
@@ -143,10 +138,7 @@ class DeeplClientTest : DescribeSpec() {
                     client.translate("", TargetLang.Dutch, splittingTags = listOf("test1", "test2"))
 
                     engineSpy.requestHistory.forAll {
-                        any {
-                            it.url.parameters["splitting_tags"] shouldBe "test2,test1"
-                            it.url.parameters["splitting_tags"] shouldBe "test1,test2"
-                        }
+                        it.url.parameters["splitting_tags"] shouldMatch """test1,test2|test2,test1"""
                     }
                 }
 
@@ -155,10 +147,7 @@ class DeeplClientTest : DescribeSpec() {
                     client.translate("", TargetLang.Dutch, ignoreTags = listOf("abc", "def"))
 
                     engineSpy.requestHistory.forAll {
-                        any {
-                            it.url.parameters["ignore_tags"] shouldBe "def,abc"
-                            it.url.parameters["ignore_tags"] shouldBe "abc,def"
-                        }
+                        it.url.parameters["ignore_tags"] shouldMatch """abc,def|def,abc"""
                     }
                 }
             }
