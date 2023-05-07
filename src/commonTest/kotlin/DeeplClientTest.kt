@@ -24,7 +24,7 @@ class DeeplClientTest : DescribeSpec() {
         describe("translate") {
             context("request") {
                 suspend fun send(key: String = authKey): MockEngine {
-                    DeeplClient(key, engineSpy).translate(text = "text", targetLang = "targetLang")
+                    DeeplClient(key, engineSpy).translate(text = "text", targetLang = TargetLang.AmericanEnglish)
 
                     return engineSpy
                 }
@@ -58,10 +58,28 @@ class DeeplClientTest : DescribeSpec() {
                         it.url.host shouldBe "api-free.deepl.com"
                     }
                 }
+            }
 
-                it("includes text to be translated") {
-                    send().requestHistory.forAll {
-                        it.url.parameters["text"] shouldBe "text"
+            context("parameters") {
+                lateinit var client: DeeplClient
+
+                beforeEach {
+                    client = DeeplClient(authKey, engineSpy)
+                }
+
+                it("accepts targetLang parameter") {
+                    client.translate(text = "", targetLang = TargetLang.AmericanEnglish)
+
+                    engineSpy.requestHistory.forAll {
+                        it.url.parameters["targetLang"] shouldBe "EN-US"
+                    }
+                }
+
+                it("accepts sourceLang parameter") {
+                    client.translate(text = "", targetLang = TargetLang.AmericanEnglish, sourceLang = SourceLang.French)
+
+                    engineSpy.requestHistory.forAll {
+                        it.url.parameters["sourceLang"] shouldBe "FR"
                     }
                 }
             }

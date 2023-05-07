@@ -1,0 +1,35 @@
+package moe.micha.deeplkt
+
+enum class SourceLang(
+    val code: String,
+) {
+    Bulgarian("BG"),
+    ChineseSimplified("ZH"),
+    Czech("CS"),
+    Danish("DA"),
+    Dutch("NL"),
+    English("EN"),
+    Estonian("ET"),
+    Finnish("FI"),
+    French("FR"),
+    German("DE"),
+    Greek("EL"),
+    Hungarian("HU"),
+    Indonesian("ID"),
+    Italian("IT"),
+    Japanese("JA"),
+    Korean("KO"),
+    Latvian("LV"),
+    Lithuanian("LT"),
+    NorwegianBokmal("NB"),
+    Polish("PL"),
+    Portuguese("PT"),
+    Romanian("RO"),
+    Russian("RU"),
+    Slovak("SK"),
+    Slovenian("SL"),
+    Spanish("ES"),
+    Swedish("SV"),
+    Turkish("TR"),
+    Ukrainian("UK");
+}

@@ -24,10 +24,15 @@ class DeeplClient(
         }
     }
 
-    suspend fun translate(text: String, targetLang: String) {
+    suspend fun translate(
+        text: String,
+        targetLang: TargetLang,
+        sourceLang: SourceLang? = null,
+    ) {
         httpClient.submitForm("translate") {
             parameter("text", text)
-            parameter("targetLang", targetLang)
+            parameter("targetLang", targetLang.code)
+            parameter("sourceLang", sourceLang?.code)
         }
     }
 }
