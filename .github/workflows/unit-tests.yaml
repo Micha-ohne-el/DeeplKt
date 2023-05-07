@@ -28,6 +28,12 @@ jobs:
       - name: Run platform-specific tests
         run: ./gradlew linuxX64Test --info
 
+      - name: Install Java for JVM tests
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '11'
+
       - name: Run JVM tests
         run: ./gradlew jvmTest --info
 
@@ -48,6 +54,12 @@ jobs:
       - name: Run platform-specific tests
         run: ./gradlew macosX64Test --info
 
+      - name: Install Java for JVM tests
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '11'
+
       - name: Run JVM tests
         run: ./gradlew jvmTest --info
 
@@ -67,6 +79,12 @@ jobs:
 
       - name: Run platform-specific tests
         run: ./gradlew windowsX64Test --info
+
+      - name: Install Java for JVM tests
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '11'
 
       - name: Run JVM tests
         run: ./gradlew jvmTest --info
