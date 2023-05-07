@@ -1,0 +1,80 @@
+name: Unit Tests
+
+on:
+  push:
+    paths:
+      - '**.kt'
+      - '**.kts'
+      - '**/gradle.properties'
+      - '**/gradlew'
+      - '**/gradlew.bat'
+      - '.github/workflows/**'
+  pull_request:
+    paths:
+      - '**.kt'
+      - '**.kts'
+      - '**/gradle.properties'
+      - '**/gradlew'
+      - '**/gradlew.bat'
+      - '.github/workflows/**'
+
+jobs:
+  test_linux:
+    name: Run unit tests on Linux
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3.3.0
+
+      - name: Run platform-specific tests
+        run: ./gradlew linuxX64Test --info
+
+      - name: Run JVM tests
+        run: ./gradlew jvmTest --info
+
+      - name: Install browser for JS tests
+        uses: abhi1693/setup-browser@v0.3.5
+        with:
+          browser: chrome
+
+      - name: Run JS tests
+        run: ./gradlew jsBrowserTest --info
+
+  test_macos:
+    name: Run unit tests on MacOS
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3.3.0
+
+      - name: Run platform-specific tests
+        run: ./gradlew macosX64Test --info
+
+      - name: Run JVM tests
+        run: ./gradlew jvmTest --info
+
+      - name: Install browser for JS tests
+        uses: abhi1693/setup-browser@v0.3.5
+        with:
+          browser: chrome
+
+      - name: Run JS tests
+        run: ./gradlew jsBrowserTest --info
+
+  test_windows:
+    name: Run unit tests on Windows
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3.3.0
+
+      - name: Run platform-specific tests
+        run: ./gradlew windowsX64Test --info
+
+      - name: Run JVM tests
+        run: ./gradlew jvmTest --info
+
+      - name: Install browser for JS tests
+        uses: abhi1693/setup-browser@v0.3.5
+        with:
+          browser: chrome
+
+      - name: Run JS tests
+        run: ./gradlew jsBrowserTest --info
