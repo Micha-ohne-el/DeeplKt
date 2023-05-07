@@ -28,11 +28,27 @@ class DeeplClient(
         text: String,
         targetLang: TargetLang,
         sourceLang: SourceLang? = null,
+        splitSentences: SplitSentences? = null,
+        preserveFormatting: PreserveFormatting? = null,
+        formality: Formality? = null,
+        tagHandling: TagHandling? = null,
+        nonSplittingTags: Iterable<String>? = null,
+        outlineDetection: OutlineDetection? = null,
+        splittingTags: Iterable<String>? = null,
+        ignoreTags: Iterable<String>? = null,
     ) {
         httpClient.submitForm("translate") {
             parameter("text", text)
-            parameter("targetLang", targetLang.code)
-            parameter("sourceLang", sourceLang?.code)
+            parameter("target_lang", targetLang.code)
+            parameter("source_lang", sourceLang?.code)
+            parameter("split_sentences", splitSentences?.value)
+            parameter("preserve_formatting", preserveFormatting?.value)
+            parameter("formality", formality?.value)
+            parameter("tag_handling", tagHandling?.value)
+            parameter("non_splitting_tags", nonSplittingTags?.joinToString(","))
+            parameter("outline_detection", outlineDetection?.value)
+            parameter("splitting_tags", splittingTags?.joinToString(","))
+            parameter("ignore_tags", ignoreTags?.joinToString(","))
         }
     }
 }
