@@ -142,5 +142,13 @@ class DeeplClientTest : StringSpec() {
                 it.url.parameters["ignore_tags"] shouldMatch """abc,def|def,abc"""
             }
         }
+
+        "translate > parameters > accepts multiple texts" {
+            client.translate("text1", "text2", "text3", targetLang = TargetLang.Dutch)
+
+            engineSpy.requestHistory.forAll {
+                it.url.parameters.getAll("text") shouldBe listOf("text1", "text2", "text3")
+            }
+        }
     }
 }

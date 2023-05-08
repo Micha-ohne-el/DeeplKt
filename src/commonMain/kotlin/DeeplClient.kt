@@ -36,9 +36,37 @@ class DeeplClient(
         outlineDetection: OutlineDetection? = null,
         splittingTags: Iterable<String>? = null,
         ignoreTags: Iterable<String>? = null,
+    ) = translate(
+        texts = arrayOf(text),
+        targetLang,
+        sourceLang,
+        splitSentences,
+        preserveFormatting,
+        formality,
+        tagHandling,
+        nonSplittingTags,
+        outlineDetection,
+        splittingTags,
+        ignoreTags,
+    )
+
+    suspend fun translate(
+        vararg texts: String,
+        targetLang: TargetLang,
+        sourceLang: SourceLang? = null,
+        splitSentences: SplitSentences? = null,
+        preserveFormatting: PreserveFormatting? = null,
+        formality: Formality? = null,
+        tagHandling: TagHandling? = null,
+        nonSplittingTags: Iterable<String>? = null,
+        outlineDetection: OutlineDetection? = null,
+        splittingTags: Iterable<String>? = null,
+        ignoreTags: Iterable<String>? = null,
     ) {
         httpClient.submitForm("translate") {
-            parameter("text", text)
+            for (text in texts) {
+                parameter("text", text)
+            }
             parameter("target_lang", targetLang.code)
             parameter("source_lang", sourceLang?.code)
             parameter("split_sentences", splitSentences?.value)
