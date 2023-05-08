@@ -4,18 +4,27 @@ import io.kotest.core.spec.style.StringSpec
 import io.kotest.inspectors.forAll
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldMatch
+import io.kotest.matchers.types.shouldBeInstanceOf
 import io.ktor.client.engine.mock.MockEngine
-import io.ktor.client.engine.mock.respondOk
+import io.ktor.client.engine.mock.respond
 import io.ktor.client.request.HttpRequestData
 import io.ktor.client.request.forms.FormDataContent
 import io.ktor.http.HttpMethod
+import io.ktor.http.HttpStatusCode
 import io.ktor.http.URLProtocol
+import io.ktor.http.headers
 
 class DeeplClientTest : StringSpec() {
     init {
         beforeEach {
             engineSpy = MockEngine {
-                respondOk()
+                respond(
+                    """{"translations":[{"detected_source_language":"EN","text":"abc"}]}""",
+                    HttpStatusCode.OK,
+                    headers = headers {
+                        append("Content-Type", "application/json")
+                    }
+                )
             }
             client = DeeplClient(authKey, engineSpy)
         }
@@ -153,6 +162,40 @@ class DeeplClientTest : StringSpec() {
             engineSpy.requestHistory.forAll {
                 it.formBody.formData.getAll("text") shouldBe listOf("text1", "text2", "text3")
             }
+        }
+
+        "translate > result > is a Translation for single text" {
+            val result = client.translate("my-text", TargetLang.Dutch)
+
+            result.shouldBeInstanceOf<Translation>()
+        }
+
+        "translate > result > is a TranslateResponse for single text" {
+            val result = client.translate("my-text", "my-other-text", targetLang = TargetLang.Dutch)
+
+            result.shouldBeInstanceOf<TranslateResponse>()
+        }
+
+        "translate > result > texts are ordered correctly" {
+            engineSpy = MockEngine {
+                respond(
+                    """
+                        {"translations":[
+                            {"detected_source_language":"EN","text":"first text"},
+                            {"detected_source_language":"EN","text":"second text"}
+                        ]}
+                    """.trimIndent(),
+                    HttpStatusCode.OK,
+                    headers = headers {
+                        append("Content-Type", "application/json")
+                    }
+                )
+            }
+
+            val result = DeeplClient(authKey, engineSpy).translate("", "", targetLang = TargetLang.Dutch)
+
+            result.translations[0].text shouldBe "first text"
+            result.translations[1].text shouldBe "second text"
         }
     }
 

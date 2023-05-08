@@ -1,5 +1,13 @@
 package moe.micha.deeplkt
 
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.descriptors.PrimitiveKind
+import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
+
+@Serializable(with = SourceLangSerializer::class)
 enum class SourceLang(
     val code: String,
 ) {
@@ -32,4 +40,15 @@ enum class SourceLang(
     Swedish("SV"),
     Turkish("TR"),
     Ukrainian("UK");
+}
+
+
+private object SourceLangSerializer : KSerializer<SourceLang> {
+    val entries = SourceLang.values().associateBy(SourceLang::code)
+
+    override val descriptor = PrimitiveSerialDescriptor("SourceLang", PrimitiveKind.STRING)
+
+    override fun serialize(encoder: Encoder, value: SourceLang) = encoder.encodeString(value.code)
+
+    override fun deserialize(decoder: Decoder) = entries[decoder.decodeString()]!!
 }

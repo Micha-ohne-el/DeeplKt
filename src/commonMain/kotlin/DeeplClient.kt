@@ -1,6 +1,7 @@
 package moe.micha.deeplkt
 
 import io.ktor.client.HttpClient
+import io.ktor.client.call.body
 import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
@@ -8,6 +9,7 @@ import io.ktor.client.request.forms.submitForm
 import io.ktor.client.request.header
 import io.ktor.http.ParametersBuilder
 import io.ktor.http.parameters
+import io.ktor.serialization.kotlinx.json.json
 
 class DeeplClient(
     private val authKey: String,
@@ -19,7 +21,9 @@ class DeeplClient(
     },
 ) {
     private val httpClient = HttpClient(httpClientEngine) {
-        install(ContentNegotiation)
+        install(ContentNegotiation) {
+            json()
+        }
 
         defaultRequest {
             url(apiUrl)
@@ -51,7 +55,7 @@ class DeeplClient(
         outlineDetection,
         splittingTags,
         ignoreTags,
-    )
+    ).translations.first()
 
     suspend fun translate(
         vararg texts: String,
@@ -65,7 +69,7 @@ class DeeplClient(
         outlineDetection: OutlineDetection? = null,
         splittingTags: Iterable<String>? = null,
         ignoreTags: Iterable<String>? = null,
-    ) {
+    ): TranslateResponse {
         val parameters = parameters {
             for (text in texts) {
                 append("text", text)
@@ -82,7 +86,9 @@ class DeeplClient(
             append("ignore_tags", ignoreTags?.joinToString(","))
         }
 
-        httpClient.submitForm("translate", parameters)
+        val response = httpClient.submitForm("translate", parameters)
+
+        return response.body()
     }
 
 
