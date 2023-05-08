@@ -42,8 +42,16 @@ jobs:
         with:
           browser: chrome
 
-      - name: Run JS tests
+      - name: Install Node for JS tests
+        uses: actions/setup-node@v3
+        with:
+          node-version: latest
+
+      - name: Run JS Browser tests
         run: ./gradlew jsBrowserTest --info
+
+      - name: Run JS Node tests
+        run: ./gradlew jsNodeTest --info
 
       - name: Publish test results
         uses: actions/upload-artifact@v3
@@ -76,8 +84,16 @@ jobs:
         with:
           browser: chrome
 
-      - name: Run JS tests
+      - name: Install Node for JS tests
+        uses: actions/setup-node@v3
+        with:
+          node-version: latest
+
+      - name: Run JS Browser tests
         run: ./gradlew jsBrowserTest --info
+
+      - name: Run JS Node tests
+        run: ./gradlew jsNodeTest --info
 
       - name: Publish test results
         uses: actions/upload-artifact@v3
@@ -110,8 +126,16 @@ jobs:
         with:
           browser: chrome
 
-      - name: Run JS tests
+      - name: Install Node for JS tests
+        uses: actions/setup-node@v3
+        with:
+          node-version: latest
+
+      - name: Run JS Browser tests
         run: ./gradlew jsBrowserTest --info
+
+      - name: Run JS Node tests
+        run: ./gradlew jsNodeTest --info
 
       - name: Publish test results
         uses: actions/upload-artifact@v3
