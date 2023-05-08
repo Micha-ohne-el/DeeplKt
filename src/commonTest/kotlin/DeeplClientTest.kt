@@ -142,8 +142,8 @@ class DeeplClientTest : StringSpec() {
         }
     }
 
-    private val authKey = "01234567-89AB-CDEF-0123-456789ABCDEF"
-    private val freeAuthKey = "$authKey:fx"
+    private val authKey get() = "01234567-89AB-CDEF-0123-456789ABCDEF"
+    private val freeAuthKey get() = "$authKey:fx"
 
     private lateinit var client: DeeplClient
     private lateinit var engineSpy: MockEngine
