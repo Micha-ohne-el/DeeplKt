@@ -113,7 +113,7 @@ class DeeplClientTest : StringSpec() {
             client.translate("", TargetLang.Dutch, nonSplittingTags = listOf("one", "two"))
 
             engineSpy.requestHistory.forAll {
-                it.url.parameters["non_splitting_tags"] shouldMatch """one,two|two,one"""
+                it.url.parameters["non_splitting_tags"] shouldMatch Regex("one,two|two,one")
             }
         }
 
@@ -130,7 +130,7 @@ class DeeplClientTest : StringSpec() {
             client.translate("", TargetLang.Dutch, splittingTags = listOf("test1", "test2"))
 
             engineSpy.requestHistory.forAll {
-                it.url.parameters["splitting_tags"] shouldMatch """test1,test2|test2,test1"""
+                it.url.parameters["splitting_tags"] shouldMatch Regex("test1,test2|test2,test1")
             }
         }
 
@@ -139,7 +139,7 @@ class DeeplClientTest : StringSpec() {
             client.translate("", TargetLang.Dutch, ignoreTags = listOf("abc", "def"))
 
             engineSpy.requestHistory.forAll {
-                it.url.parameters["ignore_tags"] shouldMatch """abc,def|def,abc"""
+                it.url.parameters["ignore_tags"] shouldMatch Regex("abc,def|def,abc")
             }
         }
 
