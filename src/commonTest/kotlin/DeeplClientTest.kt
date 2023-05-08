@@ -139,6 +139,14 @@ class DeeplClientTest : StringSpec() {
             }
         }
 
+        "translate > parameters > accepts single text" {
+            client.translate("text", TargetLang.Dutch)
+
+            engineSpy.requestHistory.forAll {
+                it.formBody.formData.getAll("text") shouldBe listOf("text")
+            }
+        }
+
         "translate > parameters > accepts multiple texts" {
             client.translate("text1", "text2", "text3", targetLang = TargetLang.Dutch)
 
