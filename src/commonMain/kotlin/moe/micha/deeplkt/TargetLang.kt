@@ -7,7 +7,7 @@ import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 
-@Serializable(with = TargetLangSerializer::class)
+@Serializable(with = TargetLang.Serializer::class)
 enum class TargetLang(
     val code: String,
 ) {
@@ -42,15 +42,14 @@ enum class TargetLang(
     Swedish("SV"),
     Turkish("TR"),
     Ukrainian("UK");
-}
 
+    object Serializer : KSerializer<TargetLang> {
+        private val values = TargetLang.values().associateBy(TargetLang::code)
 
-private object TargetLangSerializer : KSerializer<TargetLang> {
-    val entries = TargetLang.values().associateBy(TargetLang::code)
+        override val descriptor = PrimitiveSerialDescriptor("TargetLang", STRING)
 
-    override val descriptor = PrimitiveSerialDescriptor("TargetLang", STRING)
+        override fun serialize(encoder: Encoder, value: TargetLang) = encoder.encodeString(value.code)
 
-    override fun serialize(encoder: Encoder, value: TargetLang) = encoder.encodeString(value.code)
-
-    override fun deserialize(decoder: Decoder) = entries[decoder.decodeString()]!!
+        override fun deserialize(decoder: Decoder) = values[decoder.decodeString()]!!
+    }
 }
