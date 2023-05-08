@@ -5,6 +5,7 @@ import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.request.forms.submitForm
+import io.ktor.client.request.header
 import io.ktor.http.ParametersBuilder
 import io.ktor.http.parameters
 
@@ -22,6 +23,7 @@ class DeeplClient(
 
         defaultRequest {
             url(apiUrl)
+            header("Authorization", "DeepL-Auth-Key $authKey")
         }
     }
 

@@ -50,6 +50,12 @@ class DeeplClientTest : StringSpec() {
             }
         }
 
+        "translate > request > contains auth key" {
+            send().requestHistory.forAll {
+                it.headers["Authorization"] shouldBe "DeepL-Auth-Key $authKey"
+            }
+        }
+
         "translate > parameters > accepts targetLang parameter" {
             client.translate("", targetLang = TargetLang.Dutch)
 
