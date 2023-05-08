@@ -6,23 +6,13 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldMatch
 import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.engine.mock.respondOk
+import io.ktor.client.request.HttpRequestData
+import io.ktor.client.request.forms.FormDataContent
 import io.ktor.http.HttpMethod
 import io.ktor.http.URLProtocol
 
 class DeeplClientTest : StringSpec() {
     init {
-        val authKey = "01234567-89AB-CDEF-0123-456789ABCDEF"
-        val freeAuthKey = "$authKey:fx"
-
-        lateinit var client: DeeplClient
-        lateinit var engineSpy: MockEngine
-
-        suspend fun send(key: String = authKey): MockEngine {
-            DeeplClient(key, engineSpy).translate(text = "text", targetLang = TargetLang.AmericanEnglish)
-
-            return engineSpy
-        }
-
         beforeEach {
             engineSpy = MockEngine {
                 respondOk()
@@ -64,7 +54,7 @@ class DeeplClientTest : StringSpec() {
             client.translate("", targetLang = TargetLang.Dutch)
 
             engineSpy.requestHistory.forAll {
-                it.url.parameters["target_lang"] shouldBe "NL"
+                it.formBody.formData["target_lang"] shouldBe "NL"
             }
         }
 
@@ -72,7 +62,7 @@ class DeeplClientTest : StringSpec() {
             client.translate("", TargetLang.Dutch, sourceLang = SourceLang.French)
 
             engineSpy.requestHistory.forAll {
-                it.url.parameters["source_lang"] shouldBe "FR"
+                it.formBody.formData["source_lang"] shouldBe "FR"
             }
         }
 
@@ -80,7 +70,7 @@ class DeeplClientTest : StringSpec() {
             client.translate("", TargetLang.Dutch, splitSentences = SplitSentences.Never)
 
             engineSpy.requestHistory.forAll {
-                it.url.parameters["split_sentences"] shouldBe "0"
+                it.formBody.formData["split_sentences"] shouldBe "0"
             }
         }
 
@@ -88,7 +78,7 @@ class DeeplClientTest : StringSpec() {
             client.translate("", TargetLang.Dutch, preserveFormatting = PreserveFormatting.Yes)
 
             engineSpy.requestHistory.forAll {
-                it.url.parameters["preserve_formatting"] shouldBe "1"
+                it.formBody.formData["preserve_formatting"] shouldBe "1"
             }
         }
 
@@ -96,7 +86,7 @@ class DeeplClientTest : StringSpec() {
             client.translate("", TargetLang.Dutch, formality = Formality.More)
 
             engineSpy.requestHistory.forAll {
-                it.url.parameters["formality"] shouldBe "prefer_more"
+                it.formBody.formData["formality"] shouldBe "prefer_more"
             }
         }
 
@@ -104,7 +94,7 @@ class DeeplClientTest : StringSpec() {
             client.translate("", TargetLang.Dutch, tagHandling = TagHandling.Xml)
 
             engineSpy.requestHistory.forAll {
-                it.url.parameters["tag_handling"] shouldBe "xml"
+                it.formBody.formData["tag_handling"] shouldBe "xml"
             }
         }
 
@@ -113,7 +103,7 @@ class DeeplClientTest : StringSpec() {
             client.translate("", TargetLang.Dutch, nonSplittingTags = listOf("one", "two"))
 
             engineSpy.requestHistory.forAll {
-                it.url.parameters["non_splitting_tags"] shouldMatch Regex("one,two|two,one")
+                it.formBody.formData["non_splitting_tags"] shouldMatch Regex("one,two|two,one")
             }
         }
 
@@ -121,7 +111,7 @@ class DeeplClientTest : StringSpec() {
             client.translate("", TargetLang.Dutch, outlineDetection = OutlineDetection.Disabled)
 
             engineSpy.requestHistory.forAll {
-                it.url.parameters["outline_detection"] shouldBe "0"
+                it.formBody.formData["outline_detection"] shouldBe "0"
             }
         }
 
@@ -130,7 +120,7 @@ class DeeplClientTest : StringSpec() {
             client.translate("", TargetLang.Dutch, splittingTags = listOf("test1", "test2"))
 
             engineSpy.requestHistory.forAll {
-                it.url.parameters["splitting_tags"] shouldMatch Regex("test1,test2|test2,test1")
+                it.formBody.formData["splitting_tags"] shouldMatch Regex("test1,test2|test2,test1")
             }
         }
 
@@ -139,7 +129,7 @@ class DeeplClientTest : StringSpec() {
             client.translate("", TargetLang.Dutch, ignoreTags = listOf("abc", "def"))
 
             engineSpy.requestHistory.forAll {
-                it.url.parameters["ignore_tags"] shouldMatch Regex("abc,def|def,abc")
+                it.formBody.formData["ignore_tags"] shouldMatch Regex("abc,def|def,abc")
             }
         }
 
@@ -147,8 +137,22 @@ class DeeplClientTest : StringSpec() {
             client.translate("text1", "text2", "text3", targetLang = TargetLang.Dutch)
 
             engineSpy.requestHistory.forAll {
-                it.url.parameters.getAll("text") shouldBe listOf("text1", "text2", "text3")
+                it.formBody.formData.getAll("text") shouldBe listOf("text1", "text2", "text3")
             }
         }
+    }
+
+    private val authKey = "01234567-89AB-CDEF-0123-456789ABCDEF"
+    private val freeAuthKey = "$authKey:fx"
+
+    private lateinit var client: DeeplClient
+    private lateinit var engineSpy: MockEngine
+
+    private val HttpRequestData.formBody get() = body as FormDataContent
+
+    private suspend fun send(key: String = authKey): MockEngine {
+        DeeplClient(key, engineSpy).translate(text = "text", targetLang = TargetLang.AmericanEnglish)
+
+        return engineSpy
     }
 }
