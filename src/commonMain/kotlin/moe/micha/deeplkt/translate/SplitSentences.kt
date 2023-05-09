@@ -1,4 +1,4 @@
-package moe.micha.deeplkt
+package moe.micha.deeplkt.translate
 
 enum class SplitSentences(
     val value: String,

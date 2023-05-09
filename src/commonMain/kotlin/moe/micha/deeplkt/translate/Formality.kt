@@ -1,4 +1,4 @@
-package moe.micha.deeplkt
+package moe.micha.deeplkt.translate
 
 enum class Formality(
     val value: String,
@@ -8,14 +8,14 @@ enum class Formality(
     Less("prefer_less"),
 
     /**
-     * Calling [DeeplClient.translate] with [MoreOrFail]
+     * Calling [moe.micha.deeplkt.DeeplClient.translate] with [MoreOrFail]
      * will throw an exception if the target language does not support formality.
      * TODO: What exception will be thrown?
      */
     MoreOrFail("more"),
 
     /**
-     * Calling [DeeplClient.translate] with [LessOrFail]
+     * Calling [moe.micha.deeplkt.DeeplClient.translate] with [LessOrFail]
      * will throw an exception if the target language does not support formality.
      * TODO: What exception will be thrown?
      */

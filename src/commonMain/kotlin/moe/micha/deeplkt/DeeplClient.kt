@@ -10,6 +10,12 @@ import io.ktor.client.request.header
 import io.ktor.http.ParametersBuilder
 import io.ktor.http.parameters
 import io.ktor.serialization.kotlinx.json.json
+import moe.micha.deeplkt.translate.Formality
+import moe.micha.deeplkt.translate.OutlineDetection
+import moe.micha.deeplkt.translate.PreserveFormatting
+import moe.micha.deeplkt.translate.SplitSentences
+import moe.micha.deeplkt.translate.TagHandling
+import moe.micha.deeplkt.translate.TranslateResponse
 
 class DeeplClient(
     private val authKey: String,

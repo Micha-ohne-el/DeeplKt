@@ -1,4 +1,4 @@
-package moe.micha.deeplkt
+package moe.micha.deeplkt.translate
 
 import kotlinx.serialization.Serializable
 

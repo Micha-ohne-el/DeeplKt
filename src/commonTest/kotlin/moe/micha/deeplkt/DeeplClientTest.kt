@@ -13,6 +13,13 @@ import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.URLProtocol
 import io.ktor.http.headers
+import moe.micha.deeplkt.translate.Formality
+import moe.micha.deeplkt.translate.OutlineDetection
+import moe.micha.deeplkt.translate.PreserveFormatting
+import moe.micha.deeplkt.translate.SplitSentences
+import moe.micha.deeplkt.translate.TagHandling
+import moe.micha.deeplkt.translate.TranslateResponse
+import moe.micha.deeplkt.translate.Translation
 
 class DeeplClientTest : StringSpec() {
     init {
