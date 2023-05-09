@@ -6,6 +6,7 @@ import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.request.forms.submitForm
+import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.http.ParametersBuilder
 import io.ktor.http.parameters
@@ -16,6 +17,7 @@ import moe.micha.deeplkt.translate.PreserveFormatting
 import moe.micha.deeplkt.translate.SplitSentences
 import moe.micha.deeplkt.translate.TagHandling
 import moe.micha.deeplkt.translate.TranslateResponse
+import moe.micha.deeplkt.usage.Usage
 
 class DeeplClient(
     private val authKey: String,
@@ -96,6 +98,8 @@ class DeeplClient(
 
         return response.body()
     }
+
+    suspend fun getUsage(): Usage = httpClient.get("usage").body()
 
 
     private fun ParametersBuilder.append(name: String, value: String?) {
