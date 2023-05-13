@@ -12,14 +12,14 @@ data class Usage(
     val characterLimit: Int,
 
     @SerialName("document_count")
-    val documentsUsed: Int,
+    val documentsUsed: Int? = null,
 
     @SerialName("document_limit")
-    val documentLimit: Int,
+    val documentLimit: Int? = null,
 
     @SerialName("team_document_count")
-    val teamDocumentsUsed: Int,
+    val teamDocumentsUsed: Int? = null,
 
     @SerialName("team_document_limit")
-    val teamDocumentLimit: Int,
+    val teamDocumentLimit: Int? = null,
 )
