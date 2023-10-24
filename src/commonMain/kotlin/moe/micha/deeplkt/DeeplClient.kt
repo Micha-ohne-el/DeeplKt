@@ -1,6 +1,7 @@
 package moe.micha.deeplkt
 
 import io.ktor.client.HttpClient
+import io.ktor.client.HttpClientConfig
 import io.ktor.client.call.body
 import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -41,6 +42,7 @@ class DeeplClient(
     } else {
         "https://api.deepl.com/v2/"
     },
+    extraHttpClientConfig: HttpClientConfig<*>.() -> Unit = {},
 ) {
     suspend fun translate(
         text: String,
@@ -169,6 +171,8 @@ class DeeplClient(
             url(apiUrl)
             header("Authorization", "DeepL-Auth-Key $authKey")
         }
+
+        extraHttpClientConfig()
     }
 
     private fun StringValuesBuilder.append(name: String, value: String?) {
