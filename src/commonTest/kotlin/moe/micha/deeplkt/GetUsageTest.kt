@@ -5,11 +5,8 @@ import io.kotest.inspectors.forAll
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
 import io.ktor.client.engine.mock.MockEngine
-import io.ktor.client.engine.mock.respond
 import io.ktor.http.HttpMethod
-import io.ktor.http.HttpStatusCode
 import io.ktor.http.URLProtocol
-import io.ktor.http.headers
 import moe.micha.deeplkt.usage.Usage
 
 class GetUsageTest : StringSpec() {
@@ -17,11 +14,7 @@ class GetUsageTest : StringSpec() {
         beforeEach {
             engineSpy = MockEngine {
                 respond(
-                    """{"character_count": 123456, "character_limit": 654321}""",
-                    HttpStatusCode.OK,
-                    headers = headers {
-                        append("Content-Type", "application/json")
-                    }
+                    Usage(charactersUsed = 123456, characterLimit = 654321),
                 )
             }
         }

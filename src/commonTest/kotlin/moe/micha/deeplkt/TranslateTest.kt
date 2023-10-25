@@ -6,13 +6,10 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldMatch
 import io.kotest.matchers.types.shouldBeInstanceOf
 import io.ktor.client.engine.mock.MockEngine
-import io.ktor.client.engine.mock.respond
 import io.ktor.client.request.HttpRequestData
 import io.ktor.client.request.forms.FormDataContent
 import io.ktor.http.HttpMethod
-import io.ktor.http.HttpStatusCode
 import io.ktor.http.URLProtocol
-import io.ktor.http.headers
 import moe.micha.deeplkt.translate.Formality
 import moe.micha.deeplkt.translate.OutlineDetection
 import moe.micha.deeplkt.translate.PreserveFormatting
@@ -26,11 +23,9 @@ class TranslateTest : StringSpec() {
         beforeEach {
             engineSpy = MockEngine {
                 respond(
-                    """{"translations":[{"detected_source_language":"EN","text":"abc"}]}""",
-                    HttpStatusCode.OK,
-                    headers = headers {
-                        append("Content-Type", "application/json")
-                    }
+                    TranslateResponse(
+                        Translation(detectedSourceLang = SourceLang.English, text = "abc"),
+                    ),
                 )
             }
             client = DeeplClient(authKey, engineSpy)
@@ -178,16 +173,10 @@ class TranslateTest : StringSpec() {
         "result texts are ordered correctly" {
             engineSpy = MockEngine {
                 respond(
-                    """
-                        {"translations":[
-                            {"detected_source_language":"EN","text":"first text"},
-                            {"detected_source_language":"EN","text":"second text"}
-                        ]}
-                    """.trimIndent(),
-                    HttpStatusCode.OK,
-                    headers = headers {
-                        append("Content-Type", "application/json")
-                    }
+                    TranslateResponse(
+                        Translation(detectedSourceLang = SourceLang.English, text = "first text"),
+                        Translation(detectedSourceLang = SourceLang.English, text = "second text"),
+                    ),
                 )
             }
 
