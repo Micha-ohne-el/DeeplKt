@@ -4,6 +4,7 @@ import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
 import io.ktor.client.call.body
 import io.ktor.client.engine.HttpClientEngine
+import io.ktor.client.plugins.HttpRequestRetry
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.request.forms.FormBuilder
@@ -14,7 +15,9 @@ import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.HttpHeaders
+import io.ktor.http.HttpStatusCode
 import io.ktor.http.headersOf
+import io.ktor.http.isSuccess
 import io.ktor.http.parameters
 import io.ktor.http.parametersOf
 import io.ktor.serialization.kotlinx.json.json
@@ -170,6 +173,16 @@ class DeeplClient(
         defaultRequest {
             url(apiUrl)
             header("Authorization", "DeepL-Auth-Key $authKey")
+        }
+
+        install(HttpRequestRetry) {
+            maxRetries = 3
+            exponentialDelay()
+            // resulting delays inbetween requests: 1s, 2s, 4s.
+
+            retryIf { _, response ->
+                !response.status.isSuccess() && response.status != HttpStatusCode(456, "Quota Exceeded")
+            }
         }
 
         extraHttpClientConfig()
