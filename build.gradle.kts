@@ -49,16 +49,31 @@ kotlin {
         }
 
         val nativeMain = create("nativeMain") { dependsOn(commonMain) }
-        val cioBasedMain = create("cioBasedMain") {
+
+        getByName("linuxX64Main") {
             dependsOn(nativeMain)
 
             dependencies {
-                implementation("io.ktor:ktor-client-cio:2.3.0")
+                implementation("io.ktor:ktor-client-curl:2.3.0")
             }
         }
-        getByName("linuxX64Main") { dependsOn(cioBasedMain) }
-        getByName("macosX64Main") { dependsOn(cioBasedMain) }
-        getByName("macosArm64Main") { dependsOn(cioBasedMain) }
+
+        getByName("macosX64Main") {
+            dependsOn(nativeMain)
+
+            dependencies {
+                implementation("io.ktor:ktor-client-darwin:2.3.0")
+            }
+        }
+
+        getByName("macosArm64Main") {
+            dependsOn(nativeMain)
+
+            dependencies {
+                implementation("io.ktor:ktor-client-darwin:2.3.0")
+            }
+        }
+
         getByName("windowsX64Main") {
             dependsOn(nativeMain)
 
@@ -83,10 +98,9 @@ kotlin {
         }
 
         val nativeTest = create("nativeTest") { dependsOn(commonTest) }
-        val cioBasedTest = create("cioBasedTest") { dependsOn(nativeTest) }
-        getByName("linuxX64Test") { dependsOn(cioBasedTest) }
-        getByName("macosX64Test") { dependsOn(cioBasedTest) }
-        getByName("macosArm64Test") { dependsOn(cioBasedTest) }
+        getByName("linuxX64Test") { dependsOn(nativeTest) }
+        getByName("macosX64Test") { dependsOn(nativeTest) }
+        getByName("macosArm64Test") { dependsOn(nativeTest) }
         getByName("windowsX64Test") { dependsOn(nativeTest) }
     }
 }
