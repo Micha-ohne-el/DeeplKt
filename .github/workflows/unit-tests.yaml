@@ -25,6 +25,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3.3.0
 
+      - name: Symlink libcurl to a name recognized by the linker
+        run: sudo find / -name 'libcurl.so.*' -execdir realpath '{}' ';' -execdir ln -v -s '{}' 'libcurl.so' ';'
+
       - name: Run platform-specific tests
         run: ./gradlew linuxX64Test --info
 
