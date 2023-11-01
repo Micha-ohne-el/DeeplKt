@@ -7,6 +7,12 @@ plugins {
 group = "moe.micha"
 version = "0.0.0"
 
+object Versions {
+    const val coroutines = "1.7.3"
+    const val ktor = "2.3.5"
+    const val kotest = "5.7.2"
+}
+
 repositories {
     mavenCentral()
 }
@@ -35,16 +41,16 @@ kotlin {
     sourceSets {
         val commonMain = getByName("commonMain") {
             dependencies {
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
-                implementation("io.ktor:ktor-client-core:2.3.0")
-                implementation("io.ktor:ktor-client-content-negotiation:2.3.0")
-                implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.0")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.coroutines}")
+                implementation("io.ktor:ktor-client-core:${Versions.ktor}")
+                implementation("io.ktor:ktor-client-content-negotiation:${Versions.ktor}")
+                implementation("io.ktor:ktor-serialization-kotlinx-json:${Versions.ktor}")
             }
         }
 
         getByName("jvmMain") {
             dependencies {
-                implementation("io.ktor:ktor-client-java:2.3.0")
+                implementation("io.ktor:ktor-client-java:${Versions.ktor}")
             }
         }
 
@@ -54,7 +60,7 @@ kotlin {
             dependsOn(nativeMain)
 
             dependencies {
-                implementation("io.ktor:ktor-client-curl:2.3.0")
+                implementation("io.ktor:ktor-client-curl:${Versions.ktor}")
             }
         }
 
@@ -62,7 +68,7 @@ kotlin {
             dependsOn(nativeMain)
 
             dependencies {
-                implementation("io.ktor:ktor-client-darwin:2.3.0")
+                implementation("io.ktor:ktor-client-darwin:${Versions.ktor}")
             }
         }
 
@@ -70,7 +76,7 @@ kotlin {
             dependsOn(nativeMain)
 
             dependencies {
-                implementation("io.ktor:ktor-client-darwin:2.3.0")
+                implementation("io.ktor:ktor-client-darwin:${Versions.ktor}")
             }
         }
 
@@ -78,22 +84,22 @@ kotlin {
             dependsOn(nativeMain)
 
             dependencies {
-                implementation("io.ktor:ktor-client-winhttp:2.3.0")
+                implementation("io.ktor:ktor-client-winhttp:${Versions.ktor}")
             }
         }
 
         val commonTest = getByName("commonTest") {
             dependencies {
-                implementation("io.kotest:kotest-framework-engine:5.6.1")
-                implementation("io.kotest:kotest-assertions-core:5.6.1")
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4")
-                implementation("io.ktor:ktor-client-mock:2.3.0")
+                implementation("io.kotest:kotest-framework-engine:${Versions.kotest}")
+                implementation("io.kotest:kotest-assertions-core:${Versions.kotest}")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:${Versions.coroutines}")
+                implementation("io.ktor:ktor-client-mock:${Versions.ktor}")
             }
         }
 
         getByName("jvmTest") {
             dependencies {
-                implementation("io.kotest:kotest-runner-junit5:5.6.1")
+                implementation("io.kotest:kotest-runner-junit5:${Versions.kotest}")
             }
         }
 
