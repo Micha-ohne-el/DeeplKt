@@ -111,12 +111,12 @@ class DeeplClient(
 
     suspend fun translateDocument(
         content: String,
+        fileName: String,
         targetLang: TargetLang,
         sourceLang: SourceLang? = null,
-        fileName: String,
         formality: Formality? = null,
     ): String {
-        val (id, key) = uploadDocument(content, targetLang, sourceLang, fileName, formality)
+        val (id, key) = uploadDocument(content, fileName, targetLang, sourceLang, formality)
 
         awaitDocumentTranslation(id, key)
 
@@ -126,9 +126,9 @@ class DeeplClient(
 
     private suspend fun uploadDocument(
         content: String,
+        fileName: String,
         targetLang: TargetLang,
         sourceLang: SourceLang? = null,
-        fileName: String,
         formality: Formality? = null,
     ): UploadDocumentResponse {
         return httpClient.submitFormWithBinaryData(
