@@ -1,6 +1,6 @@
 plugins {
-    kotlin("multiplatform") version "1.8.20"
-    kotlin("plugin.serialization") version "1.8.20"
+    kotlin("multiplatform") version "1.9.10"
+    kotlin("plugin.serialization") version "1.9.10"
     id("io.kotest.multiplatform") version "5.6.1"
 }
 
