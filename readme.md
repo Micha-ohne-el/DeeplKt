@@ -6,14 +6,14 @@ Kotlin/Multiplatform client library for the popular [DeepL Translator](https://d
 
 DeeplKt works for both the Free and Pro plans of the DeepL API.
 
-### Text translation
+### Text Translation
 
 DeeplKt fully supports text translation (except glossaries – check [Missing Features](#missing-features)). This means that you
 can translate some string (or several strings) from any language (automatic if unspecified) to any language. You can set the
 options `splitSentences`, `preserveFormatting`, `formality`, `tagHandling`, `outlineDetection`, `splittingTags`,
 `nonSplittingTags`, and `ignoreTags` on each translation request, and all values specified by the DeepL API are supported.
 
-### Document translation
+### Document Translation
 
 DeeplKt supports document translation with all options available on the DeepL API (except glossaries – check
 [Missing Features](#missing-features)).
@@ -25,7 +25,7 @@ quickly as possible (5 times in quick succession) before slowing down and applyi
 testing, this behavior is highly desirable, but please let me know if it's causing any issues for you (rate limiting, for
 instance).
 
-### Usage checking
+### Usage Checking
 
 DeeplKt allows you to check the current usage of the API limits. You can get the usage in absolute values (used, limit,
 available), or as a percentage (0 to 1).
