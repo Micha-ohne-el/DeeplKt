@@ -9,9 +9,8 @@ DeeplKt works for both the Free and Pro plans of the DeepL API.
 ### Text Translation
 
 DeeplKt fully supports text translation (except glossaries – check [Missing Features](#missing-features)). This means that you
-can translate some string (or several strings) from any language (automatic if unspecified) to any language. You can set the
-options `splitSentences`, `preserveFormatting`, `formality`, `tagHandling`, `outlineDetection`, `splittingTags`,
-`nonSplittingTags`, and `ignoreTags` on each translation request, and all values specified by the DeepL API are supported.
+can translate a string (or several) from any language to any language. The target language is detected automatically if left
+unspecified.
 
 ### Document Translation
 
@@ -72,3 +71,4 @@ best and I'll see if I can fix some issues if there are any :)
 * Support for WASM – need to figure out how to run unit tests.
 * Support for more Apple platforms (tvOS, watchOS, etc.) – need to figure out how to run unit tests.
   Might be added on a best-effort basis.
+* Build a translation request that can be reused without having to specify all options all over again.
