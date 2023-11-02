@@ -27,7 +27,8 @@ instance).
 
 ### Usage checking
 
-DeeplKt allows you to check the current usage of the API limits.
+DeeplKt allows you to check the current usage of the API limits. You can get the usage in absolute values (used, limit,
+available), or as a percentage (0 to 1).
 
 ### Automatic Request Retrying
 

@@ -22,4 +22,27 @@ data class Usage(
 
     @SerialName("team_document_limit")
     val teamDocumentLimit: Int? = null,
-)
+) {
+    val charactersUsedRatio get() = charactersUsed.toDouble() / characterLimit.toDouble()
+    val documentsUsedRatio get() = documentsUsed?.toDouble() / documentLimit?.toDouble()
+    val teamDocumentsUsedRatio get() = teamDocumentsUsed?.toDouble() / teamDocumentLimit?.toDouble()
+
+    val charactersAvailable get() = characterLimit - charactersUsed
+    val documentsAvailable get() = documentLimit - documentsUsed
+    val teamDocumentsAvailable get() = teamDocumentLimit - teamDocumentsUsed
+
+
+    private operator fun Double?.div(that: Double?) =
+        if (this == null || that == null) {
+            null
+        } else {
+            this / that
+        }
+
+    private operator fun Int?.minus(that: Int?) =
+        if (this == null || that == null) {
+            null
+        } else {
+            this - that
+        }
+}
