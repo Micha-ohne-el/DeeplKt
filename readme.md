@@ -1,4 +1,4 @@
-# DeeplKt
+# DeeplKt [![Unit Tests](https://github.com/Micha-ohne-el/DeeplKt/actions/workflows/unit-tests.yaml/badge.svg)](https://github.com/Micha-ohne-el/DeeplKt/actions/workflows/unit-tests.yaml)
 
 Kotlin/Multiplatform client library for the popular [DeepL Translator](https://deepl.com).
 
