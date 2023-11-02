@@ -44,7 +44,7 @@ enum class TargetLang(
     Ukrainian("UK");
 
     object Serializer : KSerializer<TargetLang> {
-        private val values = TargetLang.values().associateBy(TargetLang::code)
+        private val values = entries.associateBy(TargetLang::code)
 
         override val descriptor = PrimitiveSerialDescriptor("TargetLang", STRING)
 
