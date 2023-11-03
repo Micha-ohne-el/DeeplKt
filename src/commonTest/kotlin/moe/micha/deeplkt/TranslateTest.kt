@@ -10,13 +10,8 @@ import io.ktor.client.request.HttpRequestData
 import io.ktor.client.request.forms.FormDataContent
 import io.ktor.http.HttpMethod
 import io.ktor.http.URLProtocol
-import moe.micha.deeplkt.translate.Formality
-import moe.micha.deeplkt.translate.OutlineDetection
-import moe.micha.deeplkt.translate.PreserveFormatting
-import moe.micha.deeplkt.translate.SplitSentences
-import moe.micha.deeplkt.translate.TagHandling
-import moe.micha.deeplkt.translate.TranslateResponse
-import moe.micha.deeplkt.translate.Translation
+import moe.micha.deeplkt.TargetLang.AmericanEnglish
+import moe.micha.deeplkt.translate.*
 
 class TranslateTest : StringSpec() {
     init {
@@ -68,7 +63,7 @@ class TranslateTest : StringSpec() {
         }
 
         "parameters include targetLang" {
-            client.translate("", targetLang = TargetLang.Dutch)
+            client.translate("", TargetLang.Dutch)
 
             engineSpy.requestHistory.forAll {
                 it.formBody.formData["target_lang"] shouldBe "NL"
@@ -76,7 +71,7 @@ class TranslateTest : StringSpec() {
         }
 
         "parameters include sourceLang" {
-            client.translate("", TargetLang.Dutch, sourceLang = SourceLang.French)
+            client.translate("", TargetLang.Dutch, SourceLang.French)
 
             engineSpy.requestHistory.forAll {
                 it.formBody.formData["source_lang"] shouldBe "FR"
@@ -84,7 +79,7 @@ class TranslateTest : StringSpec() {
         }
 
         "parameters include splitSentences" {
-            client.translate("", TargetLang.Dutch, splitSentences = SplitSentences.Never)
+            client.translate("", TargetLang.Dutch, TranslateOptions(splitSentences = SplitSentences.Never))
 
             engineSpy.requestHistory.forAll {
                 it.formBody.formData["split_sentences"] shouldBe "0"
@@ -92,7 +87,7 @@ class TranslateTest : StringSpec() {
         }
 
         "parameters include preserveFormatting" {
-            client.translate("", TargetLang.Dutch, preserveFormatting = PreserveFormatting.Yes)
+            client.translate("", TargetLang.Dutch, TranslateOptions(preserveFormatting = PreserveFormatting.Yes))
 
             engineSpy.requestHistory.forAll {
                 it.formBody.formData["preserve_formatting"] shouldBe "1"
@@ -100,7 +95,7 @@ class TranslateTest : StringSpec() {
         }
 
         "parameters include formality" {
-            client.translate("", TargetLang.Dutch, formality = Formality.More)
+            client.translate("", TargetLang.Dutch, TranslateOptions(formality = Formality.More))
 
             engineSpy.requestHistory.forAll {
                 it.formBody.formData["formality"] shouldBe "prefer_more"
@@ -108,7 +103,7 @@ class TranslateTest : StringSpec() {
         }
 
         "parameters include tagHandling" {
-            client.translate("", TargetLang.Dutch, tagHandling = TagHandling.Xml)
+            client.translate("", TargetLang.Dutch, TranslateOptions(tagHandling = TagHandling.Xml))
 
             engineSpy.requestHistory.forAll {
                 it.formBody.formData["tag_handling"] shouldBe "xml"
@@ -116,8 +111,8 @@ class TranslateTest : StringSpec() {
         }
 
         "parameters include nonSplittingTags" {
-            client.translate("", TargetLang.Dutch, nonSplittingTags = setOf("one", "two"))
-            client.translate("", TargetLang.Dutch, nonSplittingTags = listOf("one", "two"))
+            client.translate("", TargetLang.Dutch, TranslateOptions(nonSplittingTags = setOf("one", "two")))
+            client.translate("", TargetLang.Dutch, TranslateOptions(nonSplittingTags = listOf("one", "two")))
 
             engineSpy.requestHistory.forAll {
                 it.formBody.formData["non_splitting_tags"] shouldMatch Regex("one,two|two,one")
@@ -125,7 +120,7 @@ class TranslateTest : StringSpec() {
         }
 
         "parameters include outlineDetection" {
-            client.translate("", TargetLang.Dutch, outlineDetection = OutlineDetection.Disabled)
+            client.translate("", TargetLang.Dutch, TranslateOptions(outlineDetection = OutlineDetection.Disabled))
 
             engineSpy.requestHistory.forAll {
                 it.formBody.formData["outline_detection"] shouldBe "0"
@@ -133,8 +128,8 @@ class TranslateTest : StringSpec() {
         }
 
         "parameters include splittingTags" {
-            client.translate("", TargetLang.Dutch, splittingTags = setOf("test1", "test2"))
-            client.translate("", TargetLang.Dutch, splittingTags = listOf("test1", "test2"))
+            client.translate("", TargetLang.Dutch, TranslateOptions(splittingTags = setOf("test1", "test2")))
+            client.translate("", TargetLang.Dutch, TranslateOptions(splittingTags = listOf("test1", "test2")))
 
             engineSpy.requestHistory.forAll {
                 it.formBody.formData["splitting_tags"] shouldMatch Regex("test1,test2|test2,test1")
@@ -142,8 +137,8 @@ class TranslateTest : StringSpec() {
         }
 
         "parameters include ignoreTags" {
-            client.translate("", TargetLang.Dutch, ignoreTags = setOf("abc", "def"))
-            client.translate("", TargetLang.Dutch, ignoreTags = listOf("abc", "def"))
+            client.translate("", TargetLang.Dutch, TranslateOptions(ignoreTags = setOf("abc", "def")))
+            client.translate("", TargetLang.Dutch, TranslateOptions(ignoreTags = listOf("abc", "def")))
 
             engineSpy.requestHistory.forAll {
                 it.formBody.formData["ignore_tags"] shouldMatch Regex("abc,def|def,abc")
@@ -168,6 +163,19 @@ class TranslateTest : StringSpec() {
             }
 
             result.shouldBeInstanceOf<TranslateResponse>()
+        }
+
+        "can be called with function options" {
+            client.translate("", TargetLang.Bulgarian) {
+                splitSentences = SplitSentences.OnPunctuation
+                formality = Formality.LessOrFail
+            }
+
+            engineSpy.requestHistory.forAll {
+                it.formBody.formData["target_lang"] shouldBe "BG"
+                it.formBody.formData["split_sentences"] shouldBe "nonewlines"
+                it.formBody.formData["formality"] shouldBe "less"
+            }
         }
 
         "result texts are ordered correctly" {
@@ -196,7 +204,7 @@ class TranslateTest : StringSpec() {
     private val HttpRequestData.formBody get() = body as FormDataContent
 
     private suspend fun send(key: String = authKey): MockEngine {
-        DeeplClient(key, engineSpy).translate(text = "text", targetLang = TargetLang.AmericanEnglish)
+        DeeplClient(key, engineSpy).translate(text = "text", targetLang = AmericanEnglish)
 
         return engineSpy
     }
