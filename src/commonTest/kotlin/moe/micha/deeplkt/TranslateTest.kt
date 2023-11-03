@@ -182,16 +182,19 @@ class TranslateTest : StringSpec() {
             engineSpy = MockEngine {
                 respond(
                     TranslateResponse(
-                        Translation(detectedSourceLang = SourceLang.English, text = "first text"),
-                        Translation(detectedSourceLang = SourceLang.English, text = "second text"),
+                        Translation(detectedSourceLang = SourceLang.English, text = "translated a"),
+                        Translation(detectedSourceLang = SourceLang.English, text = "translated b"),
                     ),
                 )
             }
 
-            val result = DeeplClient(authKey, engineSpy).translate("", "", targetLang = TargetLang.Dutch)
+            val result = DeeplClient(authKey, engineSpy)
+                .translate("source a", "source b", targetLang = TargetLang.Dutch)
 
-            result.translations[0].text shouldBe "first text"
-            result.translations[1].text shouldBe "second text"
+            engineSpy.requestHistory[0].formBody.formData.getAll("text") shouldBe listOf("source a", "source b")
+
+            result.translations[0].text shouldBe "translated a"
+            result.translations[1].text shouldBe "translated b"
         }
     }
 
