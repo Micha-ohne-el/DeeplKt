@@ -83,9 +83,7 @@ class DeeplClient(
         options: TranslateOptions = TranslateOptions(),
     ): TranslateResponse {
         val parameters = parameters {
-            for (text in texts) {
-                append("text", text)
-            }
+            appendAll("text", texts.asIterable())
             append("target_lang", targetLang.code)
             append("source_lang", sourceLang?.code)
             appendAll(options.toParameters())
