@@ -40,6 +40,66 @@ the future.
 
 {{ to be determined once published }}
 
+## Basic Usage
+
+Create an instance of `DeeplClient` with the API token you got from DeepL:
+
+```kt
+val deeplClient = DeeplClient("01234567-89AB-CDEF-0123-456789ABCDEF") // include the ":fx" suffix of free-plan tokens!
+```
+
+That's all the setup you need!
+
+To translate text, just call `translate` and pass in your arguments:
+
+```kt
+val result = deeplClient.translate("Kotlin is amazing!", TargetLang.Dutch)
+
+result.detectedSourceLang // SourceLang.English
+result.text // "Kotlin is geweldig!"
+```
+
+If you're only interested in the text, fear not, `translateText` has you covered:
+
+```kt
+val translatedText = deeplClient.translate("Wow, this is so cool :)", TargetLang.Bulgarian) // "Уау, това е толкова готино :)"
+```
+
+You can specify more arguments, such as formality, tag-handling, or formatting-preservation, through a config function:
+
+```kt
+deeplClient.translateText("Do you like Kotlin?", TargetLang.German) {
+    formality = Formality.More
+} // Mögen Sie Kotlin?
+
+deeplClient.translateText("Do you like Kotlin?", TargetLang.German) {
+    formality = Formality.Less
+} // Magst du Kotlin?
+```
+
+If you're having to do a lot of translations with similar options, you can also create a `TranslateOptions` object:
+
+```kt
+val options = TranslateOptions(
+    tagHandling = TagHandling.Html,
+    outlineDetection = OutlineDetection.Enabled,
+)
+
+deeplClient.translateText(
+    "Kotlin is my favorite programming language.",
+    TargetLang.NorwegianBokmal,
+    options
+) // Kotlin er favorittprogrammeringsspråket mitt.
+
+deeplClient.translate(
+    "It isn't perfect, but I do love it <3",
+    TargetLanguage.Japanese,
+    options
+) // 完璧ではないけど、大好きなんだ <3
+```
+
+Please note that some overloads require an extra import!
+
 ## Supported Platforms
 
 * JVM (version ≥11)
