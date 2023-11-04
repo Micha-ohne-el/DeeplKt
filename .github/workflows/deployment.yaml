@@ -47,6 +47,9 @@ jobs:
 
   library:
     name: Deploy library to Maven Central
+    environment:
+      name: maven-central
+      url: https://central.sonatype.com/artifact/moe.micha/deeplkt
     env:
       GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
       GPG_KEY_PASSWORD: ${{ secrets.GPG_KEY_PASSWORD }}
