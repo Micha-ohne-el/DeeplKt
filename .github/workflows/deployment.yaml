@@ -1,15 +1,9 @@
-name: Deploy Dokka documentation to GitHub Pages
+name: Deployment
 
 on:
-  push:
-    branches: [ "main" ]
-    paths:
-      - '**.kt'
-      - '**.kts'
-      - '**/gradle.properties'
-      - '**/gradlew'
-      - '**/gradlew.bat'
-      - '.github/workflows/**'
+  release:
+    types:
+      - published
 
   workflow_dispatch:
 
@@ -22,11 +16,12 @@ permissions:
 # Make sure only one run is ever queued simultaneously to save resources.
 # If a run is queued when one is already queued, the old one will get cancelled before it starts.
 concurrency:
-  group: "documentation"
+  group: "deployment"
   cancel-in-progress: false
 
 jobs:
-  deploy:
+  documentation:
+    name: Deploy Dokka documentation to GitHub Pages
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -49,3 +44,17 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v2
+
+  library:
+    name: Deploy library to Maven Central
+    env:
+      GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+      GPG_KEY_PASSWORD: ${{ secrets.GPG_KEY_PASSWORD }}
+      SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
+      SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Publish artifacts to Maven Central
+        run: ./gradlew publish --info
