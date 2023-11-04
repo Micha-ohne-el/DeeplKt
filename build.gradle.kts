@@ -119,6 +119,24 @@ kotlin {
     }
 }
 
+val sonatypeUsername: String? = System.getenv("SONATYPE_USERNAME")
+val sonatypePassword: String? = System.getenv("SONATYPE_PASSWORD")
+val gpgPrivateKey: String? = System.getenv("GPG_PRIVATE_KEY")
+val gpgKeyPassword: String? = System.getenv("GPG_KEY_PASSWORD")
+
+val repositoryBranch: String? = System.getenv("GITHUB_REF_NAME")
+
+val repositoryUrl: String? = run {
+    val githubServerUrl: String? = System.getenv("GITHUB_SERVER_URL")
+    val githubRepository: String? = System.getenv("GITHUB_REPOSITORY")
+
+    if (githubServerUrl == null || githubRepository == null) {
+        null
+    } else {
+        "$githubServerUrl/$githubRepository"
+    }
+}
+
 val dokkaOutputDir = layout.buildDirectory.get().dir("dokka").dir("html")
 
 tasks.withType<DokkaTask>().configureEach {
@@ -127,7 +145,7 @@ tasks.withType<DokkaTask>().configureEach {
     dokkaSourceSets.configureEach {
         sourceLink {
             localDirectory = projectDir.resolve("src")
-            remoteUrl = URL("https://github.com/Micha-ohne-el/DeeplKt/tree/master/src")
+            remoteUrl = URL("$repositoryUrl/tree/$repositoryBranch/src")
             remoteLineSuffix = "#L"
         }
     }
@@ -155,8 +173,8 @@ publishing {
             url = if (version.toString().endsWith("SNAPSHOT")) snapshotsRepoUrl else releasesRepoUrl
 
             credentials {
-                username = System.getenv("SONATYPE_USERNAME")
-                password = System.getenv("SONATYPE_PASSWORD")
+                username = sonatypeUsername
+                password = sonatypePassword
             }
         }
     }
@@ -167,23 +185,23 @@ publishing {
         pom {
             name = project.name
             description = project.description
-            url = "https://github.com/Micha-ohne-el/DeeplKt"
+            url = repositoryUrl
 
             licenses {
                 license {
                     name = "MIT"
-                    url = "https://github.com/Micha-ohne-el/DeeplKt/blob/main/license.md"
+                    url = "$repositoryUrl/blob/$repositoryBranch/license.md"
                 }
             }
 
             issueManagement {
                 system = "GitHub"
-                url = "https://github.com/Micha-ohne-el/DeeplKt/issues"
+                url = "$repositoryUrl/issues"
             }
 
             scm {
-                connection = "https://github.com/Micha-ohne-el/DeeplKt.git"
-                url = "https://github.com/Micha-ohne-el/DeeplKt"
+                connection = "$repositoryUrl.git"
+                url = repositoryUrl
             }
 
             developers {
@@ -196,11 +214,10 @@ publishing {
     }
 }
 
-
 signing {
     useInMemoryPgpKeys(
-        System.getenv("GPG_PRIVATE_KEY"),
-        System.getenv("GPG_KEY_PASSWORD"),
+        gpgPrivateKey,
+        gpgKeyPassword,
     )
 
     sign(publishing.publications)
