@@ -68,6 +68,3 @@ best and I'll see if I can fix some issues if there are any :)
 * Glossaries – they are not supported at all at the moment.
 * Better handling of translation contexts.
 * Better handling of placeholder tags (mustaches).
-* Support for WASM – need to figure out how to run unit tests.
-* Support for more Apple platforms (tvOS, watchOS, etc.) – need to figure out how to run unit tests.
-  Might be added on a best-effort basis.
