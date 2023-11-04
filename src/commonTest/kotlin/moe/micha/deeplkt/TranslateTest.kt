@@ -12,6 +12,8 @@ import io.ktor.http.HttpMethod
 import io.ktor.http.URLProtocol
 import moe.micha.deeplkt.TargetLang.AmericanEnglish
 import moe.micha.deeplkt.translate.*
+import translate
+import translateText
 
 class TranslateTest : StringSpec() {
     init {
@@ -207,7 +209,7 @@ class TranslateTest : StringSpec() {
     private val HttpRequestData.formBody get() = body as FormDataContent
 
     private suspend fun send(key: String = authKey): MockEngine {
-        DeeplClient(key, engineSpy).translate(text = "text", targetLang = AmericanEnglish)
+        DeeplClient(key, engineSpy).translateText(text = "text", targetLang = AmericanEnglish)
 
         return engineSpy
     }

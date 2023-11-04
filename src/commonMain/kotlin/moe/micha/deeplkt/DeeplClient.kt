@@ -31,6 +31,7 @@ import moe.micha.deeplkt.internal.append
 import moe.micha.deeplkt.translate.Formality
 import moe.micha.deeplkt.translate.TranslateOptions
 import moe.micha.deeplkt.translate.TranslateResponse
+import moe.micha.deeplkt.translate.Translation
 import moe.micha.deeplkt.usage.Usage
 
 class DeeplClient(
@@ -43,39 +44,6 @@ class DeeplClient(
     },
     extraHttpClientConfig: HttpClientConfig<*>.() -> Unit = {},
 ) {
-    suspend fun translate(
-        text: String,
-        targetLang: TargetLang,
-        sourceLang: SourceLang? = null,
-        options: TranslateOptions = TranslateOptions(),
-    ) = translate(texts = arrayOf(text), targetLang, sourceLang, options).translations.first()
-
-    suspend fun translate(
-        text: String,
-        targetLang: TargetLang,
-        sourceLang: SourceLang? = null,
-        buildOptions: TranslateOptions.() -> Unit = {},
-    ) = translate(text, targetLang, sourceLang, TranslateOptions().apply(buildOptions))
-
-    suspend fun translate(
-        vararg texts: String,
-        targetLang: TargetLang,
-        sourceLang: SourceLang? = null,
-        buildOptions: TranslateOptions.() -> Unit = {},
-    ) = translate(texts = texts, targetLang, sourceLang, TranslateOptions().apply(buildOptions))
-
-    suspend fun translate(text: String, targetLang: TargetLang, sourceLang: SourceLang) =
-        translate(text, targetLang, sourceLang, options = TranslateOptions())
-
-    suspend fun translate(vararg texts: String, targetLang: TargetLang, sourceLang: SourceLang) =
-        translate(texts = texts, targetLang, sourceLang, options = TranslateOptions())
-
-    suspend fun translate(text: String, targetLang: TargetLang, options: TranslateOptions = TranslateOptions()) =
-        translate(text, targetLang, sourceLang = null, options)
-
-    suspend fun translate(vararg texts: String, targetLang: TargetLang, options: TranslateOptions = TranslateOptions()) =
-        translate(texts = texts, targetLang, sourceLang = null, options)
-
     suspend fun translate(
         vararg texts: String,
         targetLang: TargetLang,
@@ -93,6 +61,13 @@ class DeeplClient(
 
         return response.body()
     }
+
+    suspend fun translateText(
+        vararg texts: String,
+        targetLang: TargetLang,
+        sourceLang: SourceLang? = null,
+        options: TranslateOptions = TranslateOptions(),
+    ): List<String> = translate(texts = texts, targetLang, sourceLang, options).translations.map(Translation::text)
 
     suspend fun getUsage(): Usage = httpClient.get("usage").body()
 
