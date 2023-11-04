@@ -1,7 +1,11 @@
+import java.net.URL
+import org.jetbrains.dokka.gradle.DokkaTask
+
 plugins {
     kotlin("multiplatform") version "1.9.10"
     kotlin("plugin.serialization") version "1.9.10"
     id("io.kotest.multiplatform") version "5.6.1"
+    id("org.jetbrains.dokka") version "1.9.10"
 }
 
 group = "moe.micha"
@@ -108,5 +112,15 @@ kotlin {
         getByName("macosX64Test") { dependsOn(nativeTest) }
         getByName("macosArm64Test") { dependsOn(nativeTest) }
         getByName("windowsX64Test") { dependsOn(nativeTest) }
+    }
+}
+
+tasks.withType<DokkaTask>().configureEach {
+    dokkaSourceSets.configureEach {
+        sourceLink {
+            localDirectory = projectDir.resolve("src")
+            remoteUrl = URL("https://github.com/Micha-ohne-el/DeeplKt/tree/master/src")
+            remoteLineSuffix = "#L"
+        }
     }
 }
