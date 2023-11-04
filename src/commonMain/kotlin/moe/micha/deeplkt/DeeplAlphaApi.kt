@@ -13,7 +13,7 @@ import moe.micha.deeplkt.translate.Translation
     "DeepL alpha features may break or be removed at any moment! Only use them for testing purposes!",
     level = ERROR,
 )
-annotation class DeeplAlphaApi
+private annotation class DeeplAlphaApi
 
 @DeeplAlphaApi
 suspend fun DeeplClient.translate(

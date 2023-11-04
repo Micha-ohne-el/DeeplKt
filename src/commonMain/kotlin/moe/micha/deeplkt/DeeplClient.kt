@@ -28,6 +28,7 @@ import moe.micha.deeplkt.document.DocumentResponse.Error
 import moe.micha.deeplkt.document.DocumentResponse.InProgress
 import moe.micha.deeplkt.document.UploadDocumentResponse
 import moe.micha.deeplkt.internal.append
+import moe.micha.deeplkt.internal.defaultHttpClientEngine
 import moe.micha.deeplkt.translate.Formality
 import moe.micha.deeplkt.translate.TranslateOptions
 import moe.micha.deeplkt.translate.TranslateResponse

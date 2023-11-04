@@ -6,4 +6,4 @@ import kotlin.RequiresOptIn.Level.ERROR
     "DeepL beta features may break or be removed at any moment! Only use them for testing purposes!",
     level = ERROR,
 )
-annotation class DeeplBetaApi
+private annotation class DeeplBetaApi
