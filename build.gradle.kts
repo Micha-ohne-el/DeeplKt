@@ -183,7 +183,7 @@ publishing {
 
             scm {
                 connection = "https://github.com/Micha-ohne-el/DeeplKt.git"
-                connection = "https://github.com/Micha-ohne-el/DeeplKt"
+                url = "https://github.com/Micha-ohne-el/DeeplKt"
             }
 
             developers {
