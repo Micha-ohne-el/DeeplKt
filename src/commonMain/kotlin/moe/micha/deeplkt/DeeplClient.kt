@@ -125,7 +125,7 @@ class DeeplClient(
         return httpClient.submitForm("document/$id/result", parametersOf("document_key", key)).bodyAsText()
     }
 
-    private val httpClient = HttpClient(httpClientEngine) {
+    internal val httpClient = HttpClient(httpClientEngine) {
         expectSuccess = true
 
         install(ContentNegotiation) {
