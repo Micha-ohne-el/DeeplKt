@@ -18,6 +18,8 @@ on:
       - '**/gradlew.bat'
       - '.github/workflows/**'
 
+  workflow_dispatch:
+
 jobs:
   test_linux:
     name: Run unit tests on Linux
