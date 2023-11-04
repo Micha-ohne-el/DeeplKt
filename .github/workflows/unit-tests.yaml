@@ -20,6 +20,12 @@ on:
 
   workflow_dispatch:
 
+# Make sure only one run is ever queued simultaneously to save resources.
+# If a run is queued when one is already queued, the old one will get cancelled before it starts.
+concurrency:
+  group: "unit-tests"
+  cancel-in-progress: false
+
 jobs:
   test_linux:
     name: Run unit tests on Linux
