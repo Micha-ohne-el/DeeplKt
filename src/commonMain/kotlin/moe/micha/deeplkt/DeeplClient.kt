@@ -46,14 +46,14 @@ class DeeplClient(
 ) {
     suspend fun translate(
         vararg texts: String,
-        targetLang: TargetLang,
-        sourceLang: SourceLang? = null,
+        to: TargetLang,
+        from: SourceLang? = null,
         options: TranslateOptions = TranslateOptions(),
     ): TranslateResponse {
         val parameters = parameters {
             appendAll("text", texts.asIterable())
-            append("target_lang", targetLang.code)
-            append("source_lang", sourceLang?.code)
+            append("target_lang", to.code)
+            append("source_lang", from?.code)
             appendAll(options.toParameters())
         }
 
@@ -64,21 +64,21 @@ class DeeplClient(
 
     suspend fun translateText(
         vararg texts: String,
-        targetLang: TargetLang,
-        sourceLang: SourceLang? = null,
+        to: TargetLang,
+        from: SourceLang? = null,
         options: TranslateOptions = TranslateOptions(),
-    ): List<String> = translate(texts = texts, targetLang, sourceLang, options).translations.map(Translation::text)
+    ): List<String> = translate(texts = texts, to, from, options).translations.map(Translation::text)
 
     suspend fun getUsage(): Usage = httpClient.get("usage").body()
 
     suspend fun translateDocument(
         content: String,
         fileName: String,
-        targetLang: TargetLang,
-        sourceLang: SourceLang? = null,
+        to: TargetLang,
+        from: SourceLang? = null,
         formality: Formality? = null,
     ): String {
-        val (id, key) = uploadDocument(content, fileName, targetLang, sourceLang, formality)
+        val (id, key) = uploadDocument(content, fileName, to, from, formality)
 
         awaitDocumentTranslation(id, key)
 
@@ -89,15 +89,15 @@ class DeeplClient(
     private suspend fun uploadDocument(
         content: String,
         fileName: String,
-        targetLang: TargetLang,
-        sourceLang: SourceLang? = null,
+        to: TargetLang,
+        from: SourceLang? = null,
         formality: Formality? = null,
     ): UploadDocumentResponse {
         return httpClient.submitFormWithBinaryData(
             url = "document",
             formData = formData {
-                append("target_lang", targetLang.code)
-                append("source_lang", sourceLang?.code)
+                append("target_lang", to.code)
+                append("source_lang", from?.code)
                 append("formality", formality?.value)
                 append("file", content, headersOf(HttpHeaders.ContentDisposition, """filename="$fileName""""))
             }
@@ -140,7 +140,7 @@ class DeeplClient(
         install(HttpRequestRetry) {
             maxRetries = 3
             exponentialDelay()
-            // resulting delays inbetween requests: 1s, 2s, 4s.
+            // resulting delays between requests: 1s, 2s, 4s.
 
             retryIf { _, response ->
                 !response.status.isSuccess() && response.status != HttpStatusCode(456, "Quota Exceeded")

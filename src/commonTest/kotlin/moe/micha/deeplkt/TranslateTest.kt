@@ -62,7 +62,7 @@ class TranslateTest : StringSpec() {
             }
         }
 
-        "parameters include targetLang" {
+        "parameters include to" {
             client.translate("", TargetLang.Dutch)
 
             engineSpy.requestHistory.forAll {
@@ -70,7 +70,7 @@ class TranslateTest : StringSpec() {
             }
         }
 
-        "parameters include sourceLang" {
+        "parameters include from" {
             client.translate("", TargetLang.Dutch, SourceLang.French)
 
             engineSpy.requestHistory.forAll {
@@ -156,7 +156,7 @@ class TranslateTest : StringSpec() {
         }
 
         "can be called with multiple texts" {
-            val result = client.translate("text1", "text2", "text3", targetLang = TargetLang.Dutch)
+            val result = client.translate("text1", "text2", "text3", to = TargetLang.Dutch)
 
             engineSpy.requestHistory.forAll {
                 it.formBody.formData.getAll("text") shouldBe listOf("text1", "text2", "text3")
@@ -189,7 +189,7 @@ class TranslateTest : StringSpec() {
             }
 
             val result = DeeplClient(authKey, engineSpy)
-                .translate("source a", "source b", targetLang = TargetLang.Dutch)
+                .translate("source a", "source b", to = TargetLang.Dutch)
 
             engineSpy.requestHistory[0].formBody.formData.getAll("text") shouldBe listOf("source a", "source b")
 
@@ -207,7 +207,7 @@ class TranslateTest : StringSpec() {
     private val HttpRequestData.formBody get() = body as FormDataContent
 
     private suspend fun send(key: String = authKey): MockEngine {
-        DeeplClient(key, engineSpy).translateText(text = "text", targetLang = AmericanEnglish)
+        DeeplClient(key, engineSpy).translateText(text = "text", to = AmericanEnglish)
 
         return engineSpy
     }

@@ -18,15 +18,15 @@ annotation class DeeplAlphaApi
 @DeeplAlphaApi
 suspend fun DeeplClient.translate(
     vararg texts: String,
-    targetLang: TargetLang,
-    sourceLang: SourceLang? = null,
+    to: TargetLang,
+    from: SourceLang? = null,
     context: String,
     options: TranslateOptions = TranslateOptions(),
 ): TranslateResponse {
     val parameters = parameters {
         appendAll("text", texts.asIterable())
-        append("target_lang", targetLang.code)
-        append("source_lang", sourceLang?.code)
+        append("target_lang", to.code)
+        append("source_lang", from?.code)
         append("context", context)
         appendAll(options.toParameters())
     }
@@ -39,124 +39,124 @@ suspend fun DeeplClient.translate(
 @DeeplAlphaApi
 suspend fun DeeplClient.translate(
     text: String,
-    targetLang: TargetLang,
-    sourceLang: SourceLang? = null,
+    to: TargetLang,
+    from: SourceLang? = null,
     context: String,
     options: TranslateOptions = TranslateOptions(),
-): Translation = translate(texts = arrayOf(text), targetLang, sourceLang, context, options).translations.first()
+): Translation = translate(texts = arrayOf(text), to, from, context, options).translations.first()
 
 @DeeplAlphaApi
 suspend fun DeeplClient.translate(
     text: String,
-    targetLang: TargetLang,
-    sourceLang: SourceLang? = null,
+    to: TargetLang,
+    from: SourceLang? = null,
     context: String,
     buildOptions: TranslateOptions.() -> Unit = {},
-): Translation = translate(text, targetLang, sourceLang, context, TranslateOptions().apply(buildOptions))
+): Translation = translate(text, to, from, context, TranslateOptions().apply(buildOptions))
 
 @DeeplAlphaApi
 suspend fun DeeplClient.translate(
     vararg texts: String,
-    targetLang: TargetLang,
-    sourceLang: SourceLang? = null,
+    to: TargetLang,
+    from: SourceLang? = null,
     context: String,
     buildOptions: TranslateOptions.() -> Unit = {},
-): TranslateResponse = translate(texts = texts, targetLang, sourceLang, context, TranslateOptions().apply(buildOptions))
+): TranslateResponse = translate(texts = texts, to, from, context, TranslateOptions().apply(buildOptions))
 
 @DeeplAlphaApi
-suspend fun DeeplClient.translate(text: String, targetLang: TargetLang, sourceLang: SourceLang, context: String): Translation =
-    translate(text, targetLang, sourceLang, context, options = TranslateOptions())
+suspend fun DeeplClient.translate(text: String, to: TargetLang, from: SourceLang, context: String): Translation =
+    translate(text, to, from, context, options = TranslateOptions())
 
 @DeeplAlphaApi
 suspend fun DeeplClient.translate(
     vararg texts: String,
-    targetLang: TargetLang,
-    sourceLang: SourceLang,
+    to: TargetLang,
+    from: SourceLang,
     context: String,
 ): TranslateResponse =
-    translate(texts = texts, targetLang, sourceLang, context, options = TranslateOptions())
+    translate(texts = texts, to, from, context, options = TranslateOptions())
 
 @DeeplAlphaApi
 suspend fun DeeplClient.translate(
     text: String,
-    targetLang: TargetLang,
+    to: TargetLang,
     context: String,
     options: TranslateOptions = TranslateOptions(),
 ): Translation =
-    translate(text, targetLang, sourceLang = null, context, options)
+    translate(text, to, from = null, context, options)
 
 @DeeplAlphaApi
 suspend fun DeeplClient.translate(
     vararg texts: String,
-    targetLang: TargetLang,
+    to: TargetLang,
     context: String,
     options: TranslateOptions = TranslateOptions(),
 ): TranslateResponse =
-    translate(texts = texts, targetLang, sourceLang = null, context, options)
+    translate(texts = texts, to, from = null, context, options)
 
 @DeeplAlphaApi
 suspend fun DeeplClient.translateText(
     vararg texts: String,
-    targetLang: TargetLang,
-    sourceLang: SourceLang? = null,
+    to: TargetLang,
+    from: SourceLang? = null,
     context: String,
     options: TranslateOptions = TranslateOptions(),
-): List<String> = translate(texts = texts, targetLang, sourceLang, context, options).translations.map(Translation::text)
+): List<String> = translate(texts = texts, to, from, context, options).translations.map(Translation::text)
 
 @DeeplAlphaApi
 suspend fun DeeplClient.translateText(
     text: String,
-    targetLang: TargetLang,
-    sourceLang: SourceLang? = null,
+    to: TargetLang,
+    from: SourceLang? = null,
     context: String,
     options: TranslateOptions = TranslateOptions(),
-): String = translate(text, targetLang, sourceLang, context, options).text
+): String = translate(text, to, from, context, options).text
 
 @DeeplAlphaApi
 suspend fun DeeplClient.translateText(
     text: String,
-    targetLang: TargetLang,
-    sourceLang: SourceLang? = null,
+    to: TargetLang,
+    from: SourceLang? = null,
     context: String,
     buildOptions: TranslateOptions.() -> Unit = {},
-): String = translate(text, targetLang, sourceLang, context, buildOptions).text
+): String = translate(text, to, from, context, buildOptions).text
 
 @DeeplAlphaApi
 suspend fun DeeplClient.translateText(
     vararg texts: String,
-    targetLang: TargetLang,
-    sourceLang: SourceLang? = null,
+    to: TargetLang,
+    from: SourceLang? = null,
     context: String,
     buildOptions: TranslateOptions.() -> Unit = {},
-): List<String> = translate(texts = texts, targetLang, sourceLang, context, buildOptions).translations.map(Translation::text)
+): List<String> = translate(texts = texts, to, from, context, buildOptions).translations.map(Translation::text)
 
 @DeeplAlphaApi
-suspend fun DeeplClient.translateText(text: String, targetLang: TargetLang, sourceLang: SourceLang, context: String): String =
-    translate(text, targetLang, sourceLang, context).text
+suspend fun DeeplClient.translateText(text: String, to: TargetLang, from: SourceLang, context: String): String =
+    translate(text, to, from, context).text
 
 @DeeplAlphaApi
 suspend fun DeeplClient.translateText(
     vararg texts: String,
-    targetLang: TargetLang,
-    sourceLang: SourceLang,
+    to: TargetLang,
+    from: SourceLang,
     context: String,
 ): List<String> =
-    translate(texts = texts, targetLang, sourceLang, context).translations.map(Translation::text)
+    translate(texts = texts, to, from, context).translations.map(Translation::text)
 
 @DeeplAlphaApi
 suspend fun DeeplClient.translateText(
     text: String,
-    targetLang: TargetLang,
+    to: TargetLang,
     context: String,
     options: TranslateOptions = TranslateOptions(),
 ): String =
-    translate(text, targetLang, context, options).text
+    translate(text, to, context, options).text
 
 @DeeplAlphaApi
 suspend fun DeeplClient.translateText(
     vararg texts: String,
-    targetLang: TargetLang,
+    to: TargetLang,
     context: String,
     options: TranslateOptions = TranslateOptions(),
 ): List<String> =
-    translate(texts = texts, targetLang, context, options).translations.map(Translation::text)
+    translate(texts = texts, to, context, options).translations.map(Translation::text)
