@@ -12,8 +12,6 @@ import io.ktor.http.HttpMethod
 import io.ktor.http.URLProtocol
 import moe.micha.deeplkt.TargetLang.AmericanEnglish
 import moe.micha.deeplkt.translate.*
-import translate
-import translateText
 
 class TranslateTest : StringSpec() {
     init {

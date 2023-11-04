@@ -1,6 +1,5 @@
-import moe.micha.deeplkt.DeeplClient
-import moe.micha.deeplkt.SourceLang
-import moe.micha.deeplkt.TargetLang
+package moe.micha.deeplkt
+
 import moe.micha.deeplkt.translate.TranslateOptions
 import moe.micha.deeplkt.translate.TranslateResponse
 import moe.micha.deeplkt.translate.Translation
