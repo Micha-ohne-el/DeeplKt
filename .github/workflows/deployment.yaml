@@ -20,12 +20,30 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  library:
+    name: Deploy library to Maven Central
+    environment:
+      name: maven-central
+      url: https://central.sonatype.com/artifact/moe.micha/deeplkt
+    env:
+      GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+      GPG_KEY_PASSWORD: ${{ secrets.GPG_KEY_PASSWORD }}
+      SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
+      SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Publish artifacts to Maven Central
+        run: ./gradlew publish --info
+
   documentation:
     name: Deploy Dokka documentation to GitHub Pages
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
+    needs: library
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -44,20 +62,3 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v2
-
-  library:
-    name: Deploy library to Maven Central
-    environment:
-      name: maven-central
-      url: https://central.sonatype.com/artifact/moe.micha/deeplkt
-    env:
-      GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
-      GPG_KEY_PASSWORD: ${{ secrets.GPG_KEY_PASSWORD }}
-      SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
-      SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Publish artifacts to Maven Central
-        run: ./gradlew publish --info
