@@ -6,10 +6,14 @@ plugins {
     kotlin("plugin.serialization") version "1.9.10"
     id("io.kotest.multiplatform") version "5.6.1"
     id("org.jetbrains.dokka") version "1.9.10"
+
+    id("maven-publish")
+    id("signing")
 }
 
 group = "moe.micha"
-version = "0.0.0"
+description = "Kotlin/Multiplatform client library for the popular DeepL Translator"
+version = "0.1.0-SNAPSHOT"
 
 object Versions {
     const val coroutines = "1.7.3"
@@ -115,7 +119,11 @@ kotlin {
     }
 }
 
+val dokkaOutputDir = layout.buildDirectory.get().dir("dokka").dir("html")
+
 tasks.withType<DokkaTask>().configureEach {
+    outputDirectory = dokkaOutputDir
+
     dokkaSourceSets.configureEach {
         sourceLink {
             localDirectory = projectDir.resolve("src")
@@ -123,4 +131,77 @@ tasks.withType<DokkaTask>().configureEach {
             remoteLineSuffix = "#L"
         }
     }
+}
+
+val javadocJar = tasks.register<Jar>("javadocJar") {
+    dependsOn(tasks.dokkaHtml)
+
+    archiveClassifier = "javadoc"
+
+    from(dokkaOutputDir)
+}
+
+tasks.withType<AbstractPublishToMaven> {
+    dependsOn(tasks.withType<Sign>())
+}
+
+publishing {
+    repositories {
+        maven {
+            name = "oss"
+            val releasesRepoUrl = uri("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/")
+            val snapshotsRepoUrl = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
+
+            url = if (version.toString().endsWith("SNAPSHOT")) snapshotsRepoUrl else releasesRepoUrl
+
+            credentials {
+                username = System.getenv("SONATYPE_USERNAME")
+                password = System.getenv("SONATYPE_PASSWORD")
+            }
+        }
+    }
+
+    publications.withType<MavenPublication> {
+        artifact(javadocJar)
+
+        pom {
+            name = project.name
+            description = project.description
+            url = "https://github.com/Micha-ohne-el/DeeplKt"
+
+            licenses {
+                license {
+                    name = "MIT"
+                    url = "https://github.com/Micha-ohne-el/DeeplKt/blob/main/license.md"
+                }
+            }
+
+            issueManagement {
+                system = "GitHub"
+                url = "https://github.com/Micha-ohne-el/DeeplKt/issues"
+            }
+
+            scm {
+                connection = "https://github.com/Micha-ohne-el/DeeplKt.git"
+                connection = "https://github.com/Micha-ohne-el/DeeplKt"
+            }
+
+            developers {
+                developer {
+                    name = "Micha Lehmann"
+                    email = "michalehmann0112@gmail.com"
+                }
+            }
+        }
+    }
+}
+
+
+signing {
+    useInMemoryPgpKeys(
+        System.getenv("GPG_PRIVATE_KEY"),
+        System.getenv("GPG_KEY_PASSWORD"),
+    )
+
+    sign(publishing.publications)
 }

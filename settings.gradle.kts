@@ -1,1 +1,1 @@
-rootProject.name = "DeeplKt"
+rootProject.name = "deeplkt"
