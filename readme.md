@@ -44,7 +44,35 @@ the future.
 
 ## Installation
 
-{{ to be determined once published }}
+Simply add a dependency on DeeplKt to your Gradle project:
+
+```kt
+repositories {
+    mavenCentral()
+}
+
+// for Kotlin/Multiplatform projects:
+kotlin {
+    sourceSets {
+        getByName("commonMain") {
+            dependencies {
+                implementation("moe.micha:deeplkt:$version")
+            }
+        }
+    }
+}
+
+// for Kotlin/JVM projects:
+dependencies {
+    implementation("moe.micha:deeplkt:$version")
+}
+```
+
+Replace `$version` with the version you want, a list of which can be retrieved on
+[Maven Central](https://central.sonatype.com/artifact/moe.micha/deeplkt/versions).
+
+DeeplKt is not available for all possible Kotlin/Multiplatform targets (check [Supported Platforms](#supported-platforms)), so
+be sure that the source set you add the dependency to only has targets which are supported.
 
 ## Basic Usage
 
