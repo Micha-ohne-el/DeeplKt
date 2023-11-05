@@ -1,9 +1,9 @@
 name: Deployment
 
 on:
-  release:
-    types:
-      - published
+  push:
+    tags:
+      - versions/*
 
   workflow_dispatch:
 
