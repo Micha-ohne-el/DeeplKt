@@ -39,8 +39,7 @@ available), or as a percentage (0 to 1).
 
 DeeplKt uses [exponential-backoff](https://en.wikipedia.org/wiki/Exponential_backoff) to retry failed requests with an
 increasing delay. By default, each request is only retried three times (with delays of 1, 2, and 4 seconds respectively before
-each retry). This can be customized by providing an extra ktor configuration. This is not an ideal solution, and may change in
-the future.
+each retry). This can be customized by providing a retry configuration – see [Retry Config](#retry-config).
 
 ## Installation
 
@@ -133,6 +132,25 @@ deeplClient.translate(
 ```
 
 Please note that some overloads require an extra import!
+
+### Retry Config
+
+You can customize the way DeeplKt retries failed requests by providing a custom retry config:
+
+```kt
+val client = DeeplClient("(your auth key)") {
+    capRetriesAt(10)
+    capDelayAt(2.seconds)
+
+    if (failureReason == TooManyRequests) {
+        capDelayAt(10.seconds)
+    }
+
+    if (failureReason == ServerError) {
+        stopRequest()
+    }
+}
+```
 
 ## Supported Platforms
 
