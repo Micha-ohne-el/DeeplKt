@@ -38,11 +38,7 @@ import moe.micha.deeplkt.usage.Usage
 class DeeplClient(
     private val authKey: String,
     httpClientEngine: HttpClientEngine = defaultHttpClientEngine,
-    private val apiUrl: String = if (authKey.endsWith(":fx")) {
-        "https://api-free.deepl.com/v2/"
-    } else {
-        "https://api.deepl.com/v2/"
-    },
+    apiUrl: String? = null,
     extraHttpClientConfig: HttpClientConfig<*>.() -> Unit = {},
 ) {
     suspend fun translate(
@@ -86,6 +82,12 @@ class DeeplClient(
         return downloadDocumentTranslation(id, key)
     }
 
+
+    private val apiUrl = apiUrl ?: if (authKey.endsWith(":fx")) {
+        "https://api-free.deepl.com/v2/"
+    } else {
+        "https://api.deepl.com/v2/"
+    }
 
     private suspend fun uploadDocument(
         content: String,
@@ -134,7 +136,7 @@ class DeeplClient(
         }
 
         defaultRequest {
-            url(apiUrl)
+            url(this@DeeplClient.apiUrl)
             header("Authorization", "DeepL-Auth-Key $authKey")
         }
 
