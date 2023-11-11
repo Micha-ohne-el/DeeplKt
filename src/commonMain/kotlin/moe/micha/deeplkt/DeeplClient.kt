@@ -1,7 +1,6 @@
 package moe.micha.deeplkt
 
 import io.ktor.client.HttpClient
-import io.ktor.client.HttpClientConfig
 import io.ktor.client.call.body
 import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.plugins.HttpRequestRetry
@@ -16,7 +15,6 @@ import io.ktor.client.statement.bodyAsText
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.headersOf
-import io.ktor.http.isSuccess
 import io.ktor.http.parameters
 import io.ktor.http.parametersOf
 import io.ktor.serialization.kotlinx.json.json
@@ -27,8 +25,14 @@ import moe.micha.deeplkt.document.DocumentResponse.Done
 import moe.micha.deeplkt.document.DocumentResponse.Error
 import moe.micha.deeplkt.document.DocumentResponse.InProgress
 import moe.micha.deeplkt.document.UploadDocumentResponse
+import moe.micha.deeplkt.internal.QuotaExceeded
 import moe.micha.deeplkt.internal.append
 import moe.micha.deeplkt.internal.defaultHttpClientEngine
+import moe.micha.deeplkt.retrying.FailureReason.OtherError
+import moe.micha.deeplkt.retrying.FailureReason.QuotaExceeded
+import moe.micha.deeplkt.retrying.FailureReason.ServerError
+import moe.micha.deeplkt.retrying.FailureReason.TooManyRequests
+import moe.micha.deeplkt.retrying.RetryConfig
 import moe.micha.deeplkt.translate.Formality
 import moe.micha.deeplkt.translate.TranslateOptions
 import moe.micha.deeplkt.translate.TranslateResponse
@@ -39,7 +43,7 @@ class DeeplClient(
     private val authKey: String,
     httpClientEngine: HttpClientEngine = defaultHttpClientEngine,
     apiUrl: String? = null,
-    extraHttpClientConfig: HttpClientConfig<*>.() -> Unit = {},
+    retryConfig: (RetryConfig.() -> Unit)? = null,
 ) {
     suspend fun translate(
         vararg texts: String,
@@ -87,6 +91,13 @@ class DeeplClient(
         "https://api-free.deepl.com/v2/"
     } else {
         "https://api.deepl.com/v2/"
+    }
+
+    private val shouldRetry: RetryConfig.() -> Unit = retryConfig ?: {
+        when (failureReason) {
+            QuotaExceeded -> stopRequest()
+            else -> retry()
+        }
     }
 
     private suspend fun uploadDocument(
@@ -141,15 +152,27 @@ class DeeplClient(
         }
 
         install(HttpRequestRetry) {
-            maxRetries = 3
-            exponentialDelay()
-            // resulting delays between requests: 1s, 2s, 4s.
-
             retryIf { _, response ->
-                !response.status.isSuccess() && response.status != HttpStatusCode(456, "Quota Exceeded")
+                if (response.status.value < 400) {
+                    return@retryIf false
+                }
+
+                val failureReason = when {
+                    response.status == HttpStatusCode.TooManyRequests -> TooManyRequests
+                    response.status == HttpStatusCode.QuotaExceeded -> QuotaExceeded
+                    response.status.value in 500..599 -> ServerError
+
+                    else -> OtherError
+                }
+
+                val config = RetryConfig(retryCount, failureReason)
+                config.shouldRetry()
+
+                maxRetries = config.retryCap ?: Int.MAX_VALUE
+                exponentialDelay(maxDelayMs = config.delayCap?.inWholeMilliseconds ?: Long.MAX_VALUE)
+
+                config.shouldRetry
             }
         }
-
-        extraHttpClientConfig()
     }
 }
