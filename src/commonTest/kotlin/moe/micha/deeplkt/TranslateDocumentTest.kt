@@ -67,7 +67,7 @@ class TranslateDocumentTest : StringSpec() {
         }
 
         "checks status of document" {
-            client.translateDocument(content = "test content", fileName = "test.txt", to = TargetLang.Dutch)
+            client.translateDocumentText(content = "test content", fileName = "test.txt", to = TargetLang.Dutch)
 
             val request = engineSpy.requestHistory[1]
             request.url.encodedPath shouldBe "/v2/document/$documentId"
@@ -89,7 +89,7 @@ class TranslateDocumentTest : StringSpec() {
                 respond<DocumentResponse>(iterator.next())
             }
 
-            client.translateDocument(content = "test content", fileName = "test.txt", to = TargetLang.Dutch)
+            client.translateDocumentText(content = "test content", fileName = "test.txt", to = TargetLang.Dutch)
 
             val requests = engineSpy.requestHistory.slice(1..5)
             requests.forAll { request ->
@@ -116,7 +116,7 @@ class TranslateDocumentTest : StringSpec() {
             }
 
             shouldThrowMessage("test error message") {
-                client.translateDocument(content = "test content", fileName = "test.txt", to = TargetLang.Dutch)
+                client.translateDocumentText(content = "test content", fileName = "test.txt", to = TargetLang.Dutch)
             }
 
             val requests = engineSpy.requestHistory.slice(1..5)
@@ -132,7 +132,7 @@ class TranslateDocumentTest : StringSpec() {
 
         "downloads translation upon success" {
             val result =
-                client.translateDocument(content = "test content", fileName = "test.txt", to = TargetLang.Dutch)
+                client.translateDocumentText(content = "test content", fileName = "test.txt", to = TargetLang.Dutch)
 
             result shouldBe successfulResult
 

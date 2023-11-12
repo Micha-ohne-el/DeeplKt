@@ -24,6 +24,7 @@ import moe.micha.deeplkt.document.DocumentResponse
 import moe.micha.deeplkt.document.DocumentResponse.Done
 import moe.micha.deeplkt.document.DocumentResponse.Error
 import moe.micha.deeplkt.document.DocumentResponse.InProgress
+import moe.micha.deeplkt.document.DocumentTranslation
 import moe.micha.deeplkt.document.UploadDocumentResponse
 import moe.micha.deeplkt.internal.QuotaExceeded
 import moe.micha.deeplkt.internal.append
@@ -99,13 +100,26 @@ class DeeplClient(
         to: TargetLang,
         from: SourceLang? = null,
         formality: Formality? = null,
-    ): String {
+    ): DocumentTranslation {
         val (id, key) = uploadDocument(content, fileName, to, from, formality)
 
-        awaitDocumentTranslation(id, key)
+        val result = awaitDocumentTranslation(id, key)
 
-        return downloadDocumentTranslation(id, key)
+        val text = downloadDocumentTranslation(id, key)
+
+        return DocumentTranslation(
+            text,
+            result.billedCharacters,
+        )
     }
+
+    suspend fun translateDocumentText(
+        content: String,
+        fileName: String,
+        to: TargetLang,
+        from: SourceLang? = null,
+        formality: Formality? = null,
+    ): String = translateDocument(content, fileName, to, from, formality).text
 
 
     private val apiUrl = apiUrl ?: if (authKey.endsWith(":fx")) {
