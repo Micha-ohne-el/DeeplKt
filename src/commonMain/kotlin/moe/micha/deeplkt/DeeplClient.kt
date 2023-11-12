@@ -39,12 +39,33 @@ import moe.micha.deeplkt.translate.TranslateResponse
 import moe.micha.deeplkt.translate.Translation
 import moe.micha.deeplkt.usage.Usage
 
+/**
+ * An HTTP Client that allows interaction with the DeepL API.
+ *
+ * @param authKey
+ * Your DeepL API auth token (including the “:fx” suffix for free tokens!).
+ *
+ * @param httpClientEngine
+ * Ktor HttpClientEngine to use for web requests. Default varies per build target.
+ *
+ * @param apiUrl
+ * The base URL where the DeepL API is hosted. Default is the official endpoint and auto-selects between free or pro endpoints.
+ *
+ * @param retryConfig
+ * Builder function for changing the way [DeeplClient] retries failed requests. Requests with a status < 400 are never retried.
+ * See [RetryConfig] for more info.
+ */
 class DeeplClient(
     private val authKey: String,
     httpClientEngine: HttpClientEngine = defaultHttpClientEngine,
     apiUrl: String? = null,
     retryConfig: (RetryConfig.() -> Unit)? = null,
 ) {
+    /**
+     * Translates [texts] from the source language ([from]) to the target language ([to]).
+     *
+     * @returns A [TranslateResponse] containing all [texts] translated in the order they were passed in.
+     */
     suspend fun translate(
         vararg texts: String,
         to: TargetLang,

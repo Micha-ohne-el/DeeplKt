@@ -3,6 +3,19 @@ package moe.micha.deeplkt.translate
 import io.ktor.http.parameters
 import moe.micha.deeplkt.internal.append
 
+/**
+ * For more information about each parameter, check the parameter's type documentation.
+ *
+ * @param preserveFormatting Defaults to [PreserveFormatting.No].
+ * @param formality Defaults to [Formality.Default].
+ * @param tagHandling Defaults to no handling at all.
+ * @param nonSplittingTags Defaults to an empty list.
+ * @param splittingTags Defaults to an empty list.
+ * @param ignoreTags Defaults to an empty list.
+ * @param outlineDetection Defaults to [OutlineDetection.Enabled].
+ * @param splitSentences Defaults to [SplitSentences.OnPunctuation] when [tagHandling] is set to [TagHandling.Html],
+ * [SplitSentences.OnPunctuationAndNewlines] otherwise.
+ */
 data class TranslateOptions(
     var splitSentences: SplitSentences? = null,
     var preserveFormatting: PreserveFormatting? = null,
