@@ -23,12 +23,12 @@ on:
 # Make sure only one run is ever queued simultaneously to save resources.
 # If a run is queued when one is already queued, the old one will get cancelled before it starts.
 concurrency:
-  group: "unit-tests"
+  group: "integration"
   cancel-in-progress: false
 
 jobs:
   test_linux:
-    name: Run unit tests on Linux
+    name: Run tests on Linux
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3.3.0
@@ -36,7 +36,7 @@ jobs:
       - name: Symlink libcurl to a name recognized by the linker
         run: sudo find / -name 'libcurl.so.*' -execdir realpath '{}' ';' -execdir ln -v -s '{}' 'libcurl.so' ';'
 
-      - name: Run platform-specific tests
+      - name: Run native tests
         run: ./gradlew linuxX64Test --info
 
       - name: Install Java for JVM tests
@@ -73,12 +73,12 @@ jobs:
             build/reports/
 
   test_macos:
-    name: Run unit tests on MacOS
+    name: Run tests on MacOS
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v3.3.0
 
-      - name: Run platform-specific tests
+      - name: Run native tests
         run: ./gradlew macosX64Test --info
 
       - name: Install Java for JVM tests
@@ -115,12 +115,12 @@ jobs:
             build/reports/
 
   test_windows:
-    name: Run unit tests on Windows
+    name: Run tests on Windows
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v3.3.0
 
-      - name: Run platform-specific tests
+      - name: Run native tests
         run: ./gradlew windowsX64Test --info
 
       - name: Install Java for JVM tests
