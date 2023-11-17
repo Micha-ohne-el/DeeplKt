@@ -178,5 +178,7 @@ best and I'll see if I can fix some issues if there are any :)
 ### Missing Features
 
 * Glossaries – they are not supported at all at the moment.
-* Better handling of translation contexts.
-* Better handling of placeholder tags (mustaches).
+* Remove Ktor from DeeplKt's public interface.
+    * Custom errors – currently Ktor errors propagate through the library.
+    * Replace `httpClientEngine` with a custom interface.
+      This likely needs a way for the user to construct their own HttpClient.
