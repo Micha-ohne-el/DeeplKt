@@ -1,6 +1,7 @@
 [![Kotlin 1.9.10](https://img.shields.io/badge/Kotlin%2FMultiplatform-1.9.10-7F52FF.svg?logo=kotlin)](http://kotlinlang.org)
 [![Maven Central](https://img.shields.io/maven-central/v/moe.micha/deeplkt?label=Latest%20Version)](https://central.sonatype.com/artifact/moe.micha/deeplkt)
-[![Unit Tests status badge](https://img.shields.io/github/actions/workflow/status/Micha-ohne-el/DeeplKt/unit-tests.yaml?label=Unit%20Tests)](https://github.com/Micha-ohne-el/DeeplKt/actions/workflows/unit-tests.yaml)
+[![CI status badge](https://img.shields.io/github/actions/workflow/status/Micha-ohne-el/DeeplKt/integration.yaml?label=CI)](https://github.com/Micha-ohne-el/DeeplKt/actions/workflows/integration.yaml)
+[![CI status badge](https://img.shields.io/github/actions/workflow/status/Micha-ohne-el/DeeplKt/deployment.yaml?label=CD)](https://github.com/Micha-ohne-el/DeeplKt/actions/workflows/deployment.yaml)
 [![Documentation available](https://img.shields.io/badge/Documentation-available-blue)](https://micha-ohne-el.github.io/DeeplKt)
 [![License – MIT](https://img.shields.io/github/license/Micha-ohne-el/DeeplKt?color=gold&label=License)](https://github.com/Micha-ohne-el/DeeplKt/blob/main/license.md)
 
