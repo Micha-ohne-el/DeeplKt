@@ -17,8 +17,8 @@ version = "0.2.0"
 
 object Versions {
     const val coroutines = "1.7.3"
-    const val ktor = "2.3.5"
-    const val kotest = "5.7.2"
+    const val ktor = "2.3.6"
+    const val kotest = "5.8.0"
 }
 
 repositories {
