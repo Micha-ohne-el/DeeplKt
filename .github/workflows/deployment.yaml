@@ -3,7 +3,7 @@ name: Deployment
 on:
   push:
     tags:
-      - versions/*
+      - 'versions/*'
 
   workflow_dispatch:
 
@@ -16,7 +16,7 @@ permissions:
 # Make sure only one run is ever queued simultaneously to save resources.
 # If a run is queued when one is already queued, the old one will get cancelled before it starts.
 concurrency:
-  group: "deployment"
+  group: deployment
   cancel-in-progress: false
 
 jobs:
@@ -57,7 +57,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
         with:
-          path: 'build/dokka/html'
+          path: build/dokka/html
 
       - name: Deploy to GitHub Pages
         id: deployment

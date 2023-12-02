@@ -25,7 +25,7 @@ on:
 # Make sure only one run is ever queued simultaneously to save resources.
 # If a run is queued when one is already queued, the old one will get cancelled before it starts.
 concurrency:
-  group: "integration"
+  group: integration
   cancel-in-progress: false
 
 jobs:
@@ -44,8 +44,8 @@ jobs:
       - name: Install Java for JVM tests
         uses: actions/setup-java@v3
         with:
-          distribution: 'zulu'
-          java-version: '11'
+          distribution: zulu
+          java-version: 11
 
       - name: Run JVM tests
         run: ./gradlew jvmTest --info
@@ -86,8 +86,8 @@ jobs:
       - name: Install Java for JVM tests
         uses: actions/setup-java@v3
         with:
-          distribution: 'zulu'
-          java-version: '11'
+          distribution: zulu
+          java-version: 11
 
       - name: Run JVM tests
         run: ./gradlew jvmTest --info
@@ -128,8 +128,8 @@ jobs:
       - name: Install Java for JVM tests
         uses: actions/setup-java@v3
         with:
-          distribution: 'zulu'
-          java-version: '11'
+          distribution: zulu
+          java-version: 11
 
       - name: Run JVM tests
         run: ./gradlew jvmTest --info
