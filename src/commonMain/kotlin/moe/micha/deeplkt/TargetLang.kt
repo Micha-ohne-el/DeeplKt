@@ -9,8 +9,8 @@ import kotlinx.serialization.encoding.Encoder
 
 @Serializable(with = TargetLang.Serializer::class)
 enum class TargetLang(
-    val code: String,
-) {
+    override val code: String,
+) : Lang {
     AmericanEnglish("EN-US"),
     BrazilianPortuguese("PT-BR"),
     BritishEnglish("EN-GB"),

@@ -9,8 +9,8 @@ import kotlinx.serialization.encoding.Encoder
 
 @Serializable(with = SourceLang.Serializer::class)
 enum class SourceLang(
-    val code: String,
-) {
+    override val code: String,
+) : Lang {
     Bulgarian("BG"),
     ChineseSimplified("ZH"),
     Czech("CS"),
