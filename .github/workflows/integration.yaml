@@ -3,7 +3,7 @@ name: Integration
 on:
   push:
     tags-ignore:
-      - '*'
+      - 'versions/*'
     paths:
       - '**.kt'
       - '**.kts'
