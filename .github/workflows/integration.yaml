@@ -1,26 +1,6 @@
 name: Integration
 
-on:
-  push:
-    tags-ignore:
-      - 'versions/*'
-    paths:
-      - '**.kt'
-      - '**.kts'
-      - '**/gradle.properties'
-      - '**/gradlew'
-      - '**/gradlew.bat'
-      - '.github/workflows/**'
-  pull_request:
-    paths:
-      - '**.kt'
-      - '**.kts'
-      - '**/gradle.properties'
-      - '**/gradlew'
-      - '**/gradlew.bat'
-      - '.github/workflows/**'
-
-  workflow_dispatch:
+on: [ push, pull_request, workflow_dispatch ]
 
 # Make sure only one run is ever queued simultaneously to save resources.
 # If a run is queued when one is already queued, the old one will get cancelled before it starts.
