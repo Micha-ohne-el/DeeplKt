@@ -13,7 +13,7 @@ plugins {
 
 group = "moe.micha"
 description = "Kotlin/Multiplatform client library for the popular DeepL Translator"
-version = "0.2.0"
+version = "0.3.0"
 
 object Versions {
     const val coroutines = "1.7.3"
